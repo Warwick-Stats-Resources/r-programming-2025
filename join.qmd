@@ -1,11 +1,7 @@
 ---
-title: "Join the class"
+title: "Join the workshop"
 ---
 
-Add any instructions for joining the course here.
+Please sign up at <https://warwick.ac.uk/ellakaye/r-programming-2025/>.
 
-If there are no joining instructions:
-
-- delete the `join.qmd` file
-- delete the link to the join page in the 'Session Details' section of `index.qmd`
-- remove the lines in `_quarto.yml` which add a link to this file in the navbar.
+The deadline to register interest is **Sunday March 16th, 11:59pm**. You will be informed if you have a place on **Monday March 17th**.

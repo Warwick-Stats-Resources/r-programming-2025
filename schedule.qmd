@@ -1,5 +1,25 @@
 ---
 title: "Schedule"
+tbl-colwidths: [22, 60, 18]
 ---
 
-**Schedule goes here**
+### Monday March 24th, 2025
+
+| Time         | Session                           | Instructor |
+|--------------|-----------------------------------| ----------|
+| 13:30--13:40 | [Welcome and Introduction](content/01-welcome/index.qmd) | Ella Kaye, Heather Turner |
+| 13:40--14:20 | [Open Source and Git(Hub)](content/02-github/index.qmd)   | Ella Kaye |
+| 14:20--14:35 | Break                     | |
+| 14:35--16:00 | [Functions](content/03-functions/index.qmd)  | Heather Turner |
+
+### Tuesday March 25th, 2025
+
+| Time         | Session                           | Instructor |
+|--------------|-----------------------------------|-----------|
+| 10:00--11:15 | [Classes and Methods](content/04-classes-methods/index.qmd)   | Ella Kaye |
+| 11:15--11:30 | Break                      | |
+| 11:30--12:30 | [Efficient Programming](content/05-efficient-programming/index.qmd) | Ella Kaye |
+| 12:30--13:30 | Lunch break                             | |
+| 13:30--14:15 | [Profiling](content/06-profiling/index.qmd)             | Ella Kaye |
+| 14:15--14:30 | Coffee break                      | |
+| 14:30--16:00 | [C++ and Rcpp](content/07-r-with-cpp/index.qmd)          | Heather Turner |
