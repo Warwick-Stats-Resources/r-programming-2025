@@ -1,17 +1,9 @@
 ---
-title: TITLE
-date: last-modified
-draft: true
+title: "Efficient Programming"
+author: Ella Kaye
+date: 2025-03-25T11:30:00
+date-format: long
 ---
-
-***This page and the slides for this session are still under development***
-
-## TODO
-
-- Update TITLE
-- Update date
-- Fill in resources
-- change `draft` to `false`
 
 ## Slides
 
@@ -26,9 +18,24 @@ Here are the slides embedded:
 
 ### Reading
 
-- TITLE
+Good references on optimizing R code:
 
-  <LINK>
+- Wickham, H, _Advanced R_ (2nd edn), _Improving performance section_, <https://adv-r.hadley.nz/perf-improve.html>
 
+- Gillespie, C and Lovelace, R, _Efficient R programming_, <https://csgillespie.github.io/efficientR/>
+
+Tutorials on the Futureverse:
+
+- <https://www.futureverse.org/tutorials.html>
 
 ### Packages
+
+- **efficient**
+
+  <https://github.com/csgillespie/efficient> 
+
+- **future** and **future.apply** from the Futureverse
+
+  <https://future.futureverse.org>
+  
+  <https://future.apply.futureverse.org>

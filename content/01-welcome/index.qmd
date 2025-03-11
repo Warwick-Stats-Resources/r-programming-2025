@@ -1,17 +1,11 @@
 ---
-title: TITLE
-date: last-modified
-draft: true
+title: Welcome and Introduction
+author: 
+  - name: Ella Kaye
+  - name: Heather Turner
+date: 2025-03-24T13:30:00
+date-format: long
 ---
-
-***This page and the slides for this session are still under development***
-
-## TODO
-
-- Update TITLE
-- Update date
-- Fill in resources
-- change `draft` to `false`
 
 ## Slides
 
@@ -21,14 +15,3 @@ Here are the slides embedded:
 
 <iframe class="slide-deck ar3x2" src="/slides/01-welcome/index.html" title="01-welcome slides">
 </iframe>
-
-## Resources
-
-### Reading
-
-- TITLE
-
-  <LINK>
-
-
-### Packages

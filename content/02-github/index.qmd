@@ -1,17 +1,9 @@
 ---
-title: TITLE
-date: last-modified
-draft: true
+title: "Open Source and Git(Hub)"
+author: Ella Kaye
+date: 2025-03-24T13:40:00
+date-format: long
 ---
-
-***This page and the slides for this session are still under development***
-
-## TODO
-
-- Update TITLE
-- Update date
-- Fill in resources
-- change `draft` to `false`
 
 ## Slides
 
@@ -26,9 +18,23 @@ Here are the slides embedded:
 
 ### Reading
 
-- TITLE
+- Happy Git and GitHub for the useR by Jenny Bryan
 
-  <LINK>
+  <http://happygitwithr.com>
+
+- GitHub for supporting, reusing, contributing and failing safely by Allison Horst and Julie Lowndes
+  
+  <https://www.openscapes.org/blog/2022/05/27/github-illustrated-series/>
+
+- Version control: A practical introduction to Git and GitHub
+
+  <https://www.jvcasillas.com/github_workshop/index.html#1>
 
 
 ### Packages
+
+- **usethis**
+  - <https://usethis.r-lib.org>
+  
+- **gert**
+  - <https://docs.ropensci.org/gert>

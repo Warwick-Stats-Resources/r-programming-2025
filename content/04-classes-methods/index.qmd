@@ -1,17 +1,9 @@
 ---
-title: TITLE
-date: last-modified
-draft: true
+title: "Classes and Methods"
+author: Ella Kaye
+date: 2025-03-25T10:00:00
+date-format: long
 ---
-
-***This page and the slides for this session are still under development***
-
-## TODO
-
-- Update TITLE
-- Update date
-- Fill in resources
-- change `draft` to `false`
 
 ## Slides
 
@@ -26,9 +18,17 @@ Here are the slides embedded:
 
 ### Reading
 
-- TITLE
+-  Main reference for this section, goes a bit further (including R6):
+Wickham, H, _Advanced R_ (2nd edn), _Object-oriented programming_ section
 
-  <LINK>
+  <https://adv-r.hadley.nz/oo.html>
 
+- Fun example creating `Turtle` and `TurtleWithPen` classes to create simple graphics by moving the turtle
+
+  <https://stuartlee.org/2019/07/09/s4-short-guide/> 
 
 ### Packages
+
+- **sloop**
+
+  <https://sloop.r-lib.org>
