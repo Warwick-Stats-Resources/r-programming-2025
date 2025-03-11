@@ -1,7 +1,9 @@
 ---
 title: SESSION TITLE
 subtitle: R Programming 2025
-author: Ella Kaye & Heather Turner | Statistics
+author: 
+  - name: Ella Kaye and Heather Turner
+  - name: Department of Statistics, University of Warwick
 date: yyyy-MM-dd
 date-format: long
 footer: <https://warwick-stats-resources.github.io/r-programming-2025>

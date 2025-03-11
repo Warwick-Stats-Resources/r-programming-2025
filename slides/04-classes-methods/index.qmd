@@ -1,8 +1,10 @@
 ---
-title: SESSION TITLE
+title: Classes and Methods
 subtitle: R Programming 2025
-author: Ella Kaye & Heather Turner | Statistics
-date: yyyy-MM-dd
+author: 
+  - name: Ella Kaye and Heather Turner
+  - name: Department of Statistics, University of Warwick
+date: 2025-03-25
 date-format: long
 footer: <https://warwick-stats-resources.github.io/r-programming-2025>
 format: 
@@ -11,3 +13,780 @@ format:
       echo: true
       code-overflow: wrap
 ---
+
+
+```{r}
+#| label: setup
+#| include: false
+options(digits = 4)
+```
+
+
+## Overview
+
+- Object-oriented programming
+- S3
+- Other OOP systems (S4, R6, S7)
+
+## Source material
+
+This material is largely based on Chapters 12 and 13 of Advanced R, 2nd edition, by Hadley Wickham.
+
+The book is freely available online: <https://adv-r.hadley.nz>.
+
+It is shared under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+# Object-oriented programming {.inverse}
+
+## Object-oriented programming (OOP)
+
+With OOP, a developer can consider a function's interface separately from its implementation. 
+
+This makes it possible to use the same function for different types of input. 
+
+These are called **generic** functions. 
+
+## OOP definitions
+
+- OO systems call the type of an object its **class**.
+
+- An implementation for a specific class is called a **method**.
+
+- The class defines the **fields**, the data possessed by every instance of that class.
+
+. . .
+
+:::{.callout-tip}
+Roughly speaking, a class defines what an object *is* and methods define what an object can *do*.
+:::
+
+## OOP definitions (continued)
+
+- Classes are organised in a hierarchy, so that if a method does not exist for one class, its parent's method is used.
+
+- The child is said to **inherit** behaviour.
+
+- The process of finding the correct method given a class is called **method dispatch**.
+
+## Generic functions
+
+**Generic** functions provide a unified interface to **methods** for objects of a particular **class**, e.g.
+
+```{r penguins}
+library(palmerpenguins)
+```
+
+```{r generic}
+summary(penguins$species)
+summary(penguins$flipper_length_mm)
+```
+
+Here, we use the same function, `summary()`, on objects of classes `factor` and `integer` and get different output for each.
+
+## Motivation for OOP
+
+`summary()` could contain several if-else statements, but 
+ 
+ - the code would become hard to follow
+ - only the function authors (R Core) could add new implementations
+ 
+## What does OOP offer?
+
+ - separates the code for different data types
+ - avoids duplicating code by method inheritance from parent class(es) to child class (subclass)
+ - makes it possible for external developers to add methods for new types of object
+    - this can be particularly useful when writing R packages
+
+
+## OOP Systems in R
+
+There are 3 main OOP systems in use:
+
+:::{.smaller90}
+* **S3** 
+  - Used in base R and most recommended/CRAN packages
+  - Use unless you have good reason not to
+* **S4**
+  - Used on Bioconductor
+  - Allow more complex relationships between classes and methods
+* **R6**
+  - More similar to OOP in other languages
+  - May prefer if S3 insufficient and not aiming for Bioconductor
+    
+A new OOP system, **S7**, is in [development](https://rconsortium.github.io/OOP-WG/) as a successor to **S3** and **S4**. 
+:::
+
+:::{.notes}
+R6 v similar to Python OOP (also Java, C++)
+Julia not an OOP language, but does have concept of multiple dispatch
+- so maybe a bit more like S3 idea?
+:::
+
+## sloop
+
+The **sloop** package provides tools to help you interactively explore and understand object oriented programming in R, particularly with S3.
+
+```{r}
+library(sloop)
+```
+
+## Objects
+
+In R, we can distinguish between **base objects** and **OO objects**.
+
+A base object:
+```{r}
+is.object(1:10)
+sloop::otype(1:10)
+```
+
+An OO object:
+```{r}
+is.object(penguins)
+sloop::otype(penguins)
+```
+
+
+::: {.notes}
+Everything in R is an object, but not everything is object-oriented.  
+:::
+
+## Classes
+
+Techincally, the difference between base and OO objects is that OO objects have a **class** attribute:
+
+```{r}
+attr(1:10, "class")
+attr(penguins, "class")
+sloop::s3_class(penguins)
+```
+
+## Base types
+
+Only OO objects have a class attribute, but every object has a **base type**.
+
+There are 25 different base types, e.g.
+
+```{r}
+typeof(NULL)
+typeof(1)
+typeof(1L)
+typeof("hello")
+```
+## "object of type 'closure' is not subsettable"
+
+```{r error = TRUE}
+typeof(mean)
+mean[1]
+```
+
+. . . 
+
+Jenny Bryan's talk on debugging: 
+
+<https://posit.co/resources/videos/object-of-type-closure-is-not-subsettable/>
+
+# S3 {.inverse}
+
+## S3 objects
+
+An S3 object has a `"class"` attribute:
+
+```{r}
+attr(penguins$species, "class")
+unique(penguins$species)
+```
+
+## S3 objects: the underlying object
+
+With `unclass()` we obtain the underlying object, its **base type**, here an integer vector 
+
+```{r}
+species_no_class <- unclass(penguins$species)
+class(species_no_class)
+unique(species_no_class)
+attributes(species_no_class)
+```
+## OO type vs base type when passed to generic
+
+```{r}
+f <- factor(c("a", "b", "c"))
+print(f)
+print(unclass(f))
+```
+
+## generic as middleman
+
+> The generic is the middleman: its job is to define the interface (i.e. the arguments) then find the right implementation for the job. The implementation for a specific class is called a **method**, and the generic finds that method by performing **method dispatch**.
+
+Hadley Wickham, Advanced R (2e)
+
+## Naming scheme
+
+S3 methods are functions with a special naming scheme, `generic.class()`. For example, the `factor` method for the `print()` generic is called `print.factor()`.
+
+You should never call the method directly, but instead rely on the generic to find it for you.
+
+. . . 
+
+:::{.callout-tip}
+This is why it is not considered best practice to use `.` when naming your own functions.
+:::
+
+. . .
+
+:::{.callout-warning}
+Lots of important R functions that are **not** methods *do* have `.` in the title -- these are from before S3.
+:::
+
+::: {.notes}
+e.g.
+data.frame()
+row.names()
+:::
+
+## Creating OO objects
+
+To make an object an instance of a class, you simply set the **class attribute**.
+
+(S3 has no formal definition of a class).
+
+## Creating an S3 object with `stucture()`
+
+You can use `structure()` to define an S3 object with a class attribute:
+
+```{r}
+dp <- 2
+structure(list(pi = trunc(10^dp * pi)/10^dp, dp = dp),
+          class = "pi_trunc")
+```
+
+Potentially further attributes can be added at the same time, but typically we would use a list to return all the required values.
+
+## Creating an S3 object with `class()`
+
+Alternatively, we can add a class attribute using the `class()` helper function:
+
+```{r}
+pi2dp <- list(pi = trunc(10^dp * pi)/10^dp, dp = dp)
+class(pi2dp) <- "pi_trunc"
+pi2dp
+```
+
+## Warning!
+
+S3 has no checks for correctness, so we can change the class of objects. 
+
+**This is a bad idea!**
+
+```{r error = TRUE}
+mod <- lm(flipper_length_mm ~ bill_length_mm, data = penguins)
+class(mod)
+class(mod) <- "Date"
+print(mod)
+```
+
+. . .
+
+> R doesn't stop you from shooting yourself in the foot, but as long as you don't aim the gun at your toes and pull the trigger, you won't have a problem.
+
+## Creating your own classes
+
+All objects of the same class should have the same structure, i.e. same base type and same attributes.
+
+Recommend that you create:
+
+- a low-level **constructor**, `new_myclass()`, that efficiently creates objects with the correct structure
+- A **validator**, `validate_myclass()` that performs more computationally expensive checks to ensure the object has correct values
+- A user-friendly **helper**, `myclass()`, that provides a convenient way for others to create objects of your class.
+
+See <https://adv-r.hadley.nz/s3.html#s3-classes> for more details.
+
+## print generic
+
+```{r}
+print(pi2dp)
+```
+
+:::{.notes}
+See what happens before we define a custom print method later
+
+Prints like a list along with the attribute
+:::
+
+## S3 generic functions
+
+S3 generic functions are simple wrappers to `UseMethod()`
+
+```{r}
+print
+```
+
+## `useMethod()`
+
+The `UseMethod()` function takes care of *method dispatch*: selecting the S3 method according to the class of the object passed as the first argument.
+
+
+```{r}
+class(penguins$species[1:3])
+print(penguins$species[1:3])
+```
+
+Here `print()` dispatches to the method `print.factor()`. 
+
+## `s3_dispatch()`
+
+`UseMethod()` creates a vector of method names then looks for each potential method in turn. We can see this with `sloop::s3_dispatch()`:
+
+```{r}
+s3_dispatch(print(penguins$species))
+```
+
+- `=>` indicates the method that is called here.
+- `*` indicated a method that is defined, but not called.
+
+## `default`
+
+`default` is a special **pseudo-class** that provides a fallback whenever a class-specific method is not available.
+
+```{r}
+s3_dispatch(print(pi2dp))
+```
+
+`print.pi_trunc` is not defined.
+
+## Method dispatch
+
+An S3 object can have more than one class e.g.
+```{r}
+class(penguins)
+```
+`UseMethod()` works along the vector of classes (from the first class to the last), looks for a method for each class and dispatches to the first method it finds.
+
+If no methods are defined for any of class, the default is used , e.g. `print.default()`.
+
+If there is no default, an error is thrown.
+
+## S3 methods for a class
+
+See the methods for a given S3 class:
+
+```{r}
+# nls is nonlinear least squares
+methods(class = "nls")
+```
+. . . 
+
+```{r}
+s3_methods_class("nls") |> head()
+```
+
+## S3 methods for a generic
+
+See the methods for a given generic function:
+
+```{r}
+methods("coef")
+```
+Asterisked methods are not exported.
+
+. . .
+
+```{r}
+s3_methods_generic("coef")
+```
+
+## View S3 methods
+
+S3 methods need not be in the same package as the generic.
+
+Find an unexported method with `getS3method()` or `sloop::s3_get_method()`
+
+```{r}
+getS3method("coef", "default")
+```
+```{r}
+#| eval: false
+s3_get_method("coef.default") # equivalent
+```
+
+
+::: {.notes}
+Can view code for exported functions by just typing the function name, or, in RStudio, using `View(function_name)`  
+:::
+
+## Writing S3 Methods
+
+The arguments of a new method should be a superset of the arguments of the generic
+
+```{r}
+args(print)
+```
+
+. . .
+
+New methods have the name format `generic.class`:
+
+```{r}
+print.pi_trunc <- function(x, abbreviate = TRUE, ...){
+  dp_text <- ifelse(abbreviate, "d.p.", "decimal places")
+  cat("pi: ", x$pi, " (", x$dp, " ", dp_text, ")", sep = "")
+}
+print(pi2dp)
+```
+
+. . . 
+
+```{r}
+print(pi2dp, abbreviate = FALSE)
+```
+
+::: {.notes}
+Note the difference compared to calling `print(pi2dp)` before.
+:::
+
+## Inheritance
+
+S3 classes can share behaviour through a mechanism called **inheritance**. Inheritance is powered by three ideas.
+
+- The class can be a character *vector*
+
+- If a method is not found for the class in the first element of the vector, R looks for a method in the second class (and so on)
+
+- A method can delegate work by calling `NextMethod()`.
+
+## Multiple classes
+
+The class of an S3 object can be a vector of classes: 
+
+```{r}
+fit <- glm(y ~ x, data = data.frame(y = 1:3, x = 4:6))
+class(fit)
+```
+We say `fit` is a `"glm"` object that **inherits** from class `"lm"`.
+
+- `glm` is a **subclass** of `lm`, because it always appears before it in the class vector.
+
+- `lm` is a **superclass** of `glm`.
+
+::: {.notes}
+Good practice:
+
+- base type of the subclass should be the same as the superclass
+
+- attributes of the subclass should be a superset of the attributes of the superclass.
+
+These practices are not enforced. These are recommendations in Advanced R for make life easier.  
+:::
+
+## `inherits()`
+
+The `inherits()` function can be used to test if an object inherits from a given class:
+
+```{r}
+inherits(fit, "glm")
+inherits(fit, "lm")
+inherits(fit, "xlm")
+```
+
+
+## Your turn (part 1)
+
+```{r}
+#| echo: false
+ols <- function(x, y, ...){
+  fit <- lm(y ~ x, data =  data.frame(x = x, y = y))
+  class(fit) <- c("ols", class(fit))
+  fit
+}
+
+print.ols <- function(x, ...){
+  cat("Intercept: ", coef(x)[1], "\n")
+  cat("Slope: ", coef(x)[2], "\n")
+}
+```
+
+1. Create a function to fit an ordinary least squares model given a response `y` and an explanatory variable `x`, that returns an object of a new class `"ols"`, that inherits from `"lm"`.
+
+2. Define a print method for your function that it works as follows:
+
+```{r}
+set.seed(1)
+res <- ols(x = 1:3, y = rnorm(3))
+res
+```
+
+Note: I have set `options(digits = 4)` to limit the number of digits printed by default throughout this presentation (default is 7).
+
+
+## `NextMethod()`
+
+Hard to understand, so here's a concrete example for the common use case: `[`.
+
+```{r}
+new_secret <- function(x = double()) {
+  stopifnot(is.double(x))
+  structure(x, class = "secret")
+}
+
+print.secret <- function(x, ...) {
+  print(strrep("x", nchar(x)))
+  invisible(x)
+}
+
+x <- new_secret(c(15, 1, 456))
+x
+```
+
+::: {.notes}
+?`[`
+:::
+
+## But there's a problem
+
+```{r}
+x[1]
+```
+
+We want this to be secret!
+. . . 
+
+The default `[` method doesn't preserve the class.
+
+```{r}
+s3_dispatch(x[1])
+```
+
+::: {.notes}
+There's no `[.default` defined (no `*` next to it), just an internal generic. We'll learn more about those later.  
+:::
+
+## A first attempt at a solution
+
+So, need to defined a `[.secret` method. 
+
+But the following doesn't work:
+
+```{r error = TRUE}
+`[.secret` <- function(x, i) {
+  new_secret(x[i])
+}
+x[1]
+```
+
+It gets stuck in infinite loop.
+
+
+::: {.notes}
+Trying to subset `x` then call new_secret on it, to give it the `secret` class, so that `print.secret` works on said subset.  
+:::
+
+## What's the fix?
+
+We need some way of calling the underlying `[` code, i.e. the implementation that would get called if we didn't have a `[.secret` method.
+
+```{r}
+`[.secret` <- function(x, i) {
+  new_secret(NextMethod())
+}
+x[1]
+```
+
+. . . 
+
+i.e. we're defining `[.secret` but we still want to access the internal `[` method (so we don't get stuck in a loop) as if `[.secret` wasn't defined.
+
+
+## Delegation with `NextMethod()`
+
+```{r}
+s3_dispatch(x[1])
+```
+
+The `=>` indicates that `[.secret` is called, but that `NextMethod()` delegates work to the underlying internal `[` method, as shown by `->`.
+
+
+## Another `NextMethod()` example
+
+```{r}
+data <- data.frame(x = 1:3, y = 4:6)
+class(data)
+data
+t(data)
+```
+
+::: {.notes}
+`t()` is the transpose function. 
+We started with a data.frame but after calling `t` on it, we have a matrix. What happened?
+:::
+
+## Underlying code
+
+```{r}
+t.data.frame
+```
+```{r}
+s3_dispatch(t(data))
+```
+
+. . .
+
+We can explicitly call the next method that would be called by `UseMethod()` to reuse code whilst customising as required.
+
+:::{.notes}
+We have seen that `UseMethod()` will dispatch to the method of the next class in the class vector if a method is not defined for the first class.
+:::
+
+## Implicit classes
+
+As we've seen, `is.object()` or `sloop::otype()` can be used to find out if an object has a class (S3/S4/R6)
+
+```{r}
+is.object(factor(1:3))
+is.object(1:3)
+```
+
+An object that does not have an explicit class has an implicit class that will be used for S3 method dispatch. 
+
+## Implicit classes and dispatch
+
+The implicit class can be found with `.class2()`, or `sloop::s3_class()`
+
+```{r}
+M <- matrix(1:12, nrow = 4)
+attr(M, "class")
+.class2(M)
+s3_class(M)
+```
+
+The `class()` of an object does not uniquely determine its dispatch:
+
+```{r}
+s3_dispatch(print(M))
+```
+
+:::{.notes}
+.class2 since R 4.0.0. 
+:::
+
+## Attributes
+:::{.smaller90}
+We can take advantage of existing S3 methods by returning an object of a existing S3 class or an implicit class, using attributes to add custom information
+
+```{r}
+x <- matrix(c(1:5, 2*(1:5)), ncol = 2)
+center_x <- scale(x, scale = FALSE)
+class(center_x)
+summary(center_x)
+```
+
+```{r}
+attr(center_x, "scaled:center")
+```
+This can avoid the need to define new classes and methods, in simple cases.
+:::
+
+::: {.notes}
+`attr(x, "scaled:center")` in `NULL`
+
+`center_x` is still a matrix, and so `summary(center_x)` dispatches to `summary.matrix`. We can take advantage of the methods for `matrix`, without needing to define a new class for `scaled`.
+:::
+
+## Under the hood
+
+```{r}
+s3_dispatch(scale(x, scale = FALSE))
+```
+```{r}
+s3_dispatch(summary(center_x))
+```
+```{r eval = FALSE}
+View(scale.default)
+```
+
+. . .
+
+In `scale.default()` the attribute `"scaled:center"` is added to the `x` argument, so essentially, `center_x` is a matrix with extra information (in this case, the colMeans of the original columns).
+
+## Your turn (part 2)
+
+```{r}
+#| echo: false
+summary.ols <- function(object, ...){
+  res <- NextMethod()
+  class(res) <- c("summary.ols", class(res))
+  res
+}
+print.summary.ols <- function(x, ...){
+  cf <- coef(x)
+  cat("Coefficients: \n") 
+  print(cf)
+  cat("\n")
+  cat("Residual standard error: ", x$sigma, "\n")
+  cat("Multiple R-squared: ", x$r.squared, "\n")
+}
+```
+
+3. Write a summary method for your `ols` class that uses `NextMethod()` to compute the usual `lm` summary, but return an object of class `"summary.ols"`. 
+
+4. Write a print method for the `"summary.ols"` which works as follows:
+
+```{r}
+summary(res)
+```
+
+:::{.notes}
+will get issues with inheriting e.g. add1 method
+:::
+
+# Other OOP systems {.inverse}
+
+## S4
+
+S4 provides a formal approach to OOP. Its implementation is much stricter than S3.
+
+S4 has **slots**, a named component of the object accessed with `@`.
+
+S4 methods:
+
+ - use specialised functions for creating classes, generics and methods
+ - allow _multiple inheritance_: a class can have multiple parents
+ - allow _multiple dispatch_: method selection based on the class of multiple objects
+
+:::{.notes}
+use import instead
+
+The **methods** package provides the functions required to use S4 classes and methods, so always load this package when using S4.
+:::
+
+## S4 uses
+
+- S4 is the OOP system used for bioconductor packages
+- The **Matrix** package
+
+## R6
+
+- The R6 OOP system is defined in the **R6** package: <https://r6.r-lib.org>
+- Encapsulated OOP, similar to OOP systems in other languages
+- The Advanced R book cautions against using R6 - it leads to non-idiomatic R code.
+
+## S7
+
+- Currently in the **S7** package: <https://rconsortium.github.io/S7/>
+- Will eventually be incorporated into R as the successor S3 and S4. 
+- An example of using S7 for generative art: <https://blog.djnavarro.net/posts/2024-02-25_s7/>
+
+# End matter {.inverse}
+
+## References
+
+- Main reference for this session, goes a bit further (including R6):
+Wickham, H, _Advanced R_ (2nd edn), _Object-oriented programming section_, <https://adv-r.hadley.nz/oo.html>
+
+- Fun example creating `Turtle` and `TurtleWithPen` classes to create simple graphics by moving the turtle:
+<https://stuartlee.org/2019/07/09/s4-short-guide/> 
+
+## License
+
+Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
+

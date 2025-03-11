@@ -1,8 +1,10 @@
 ---
-title: SESSION TITLE
+title: Welcome and Introduction
 subtitle: R Programming 2025
-author: Ella Kaye & Heather Turner | Statistics
-date: yyyy-MM-dd
+author: 
+  - name: Heather Turner and Ella Kaye
+  - name: Department of Statistics, University of Warwick
+date: 2025-03-24
 date-format: long
 footer: <https://warwick-stats-resources.github.io/r-programming-2025>
 format: 
@@ -11,3 +13,86 @@ format:
       echo: true
       code-overflow: wrap
 ---
+
+# Hello! {.inverse .center-h}
+
+## Instructors
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Ella Kaye
+
+![](images/ellakaye-profile-2023-square.jpeg){width=50%}
+
+:::{.smaller80}
+Research Software Engineer 
+
+Department of Statistics
+
+University of Warwick
+
+<https://warwick.ac.uk/ellakaye>
+:::
+:::
+
+::: {.column width="50%"}
+### Heather Turner
+
+![](images/heather_turner.jpg){width=50%}
+
+:::{.smaller80}
+RSE Fellow
+
+Department of Statistics
+
+University of Warwick
+
+<https://warwick.ac.uk/heatherturner>
+:::
+
+:::
+
+::::
+
+
+## Course material
+
+- Website and slides 
+  
+  <https://Warwick-Stats-Resources.github.io/r-programming-2025>
+  
+- Website and slides repo
+
+  <https://github.com/Warwick-Stats-Resources/r-programming-2025>
+  
+- Exercises and additional material
+
+  <https://github.com/Warwick-Stats-Resources/Advanced-R-exercises>
+  
+## Schedulue: Monday March 24th
+
+:::{.smaller90}
+| Time         | Session                           | Instructor |
+|--------------|-----------------------------------| ----------|
+| 13:30--13:40 | [Welcome and Introduction](content/01-welcome/index.qmd) | Ella Kaye, Heather Turner |
+| 13:40--14:20 | [Open Source and Git(Hub)](content/02-github/index.qmd)   | Ella Kaye |
+| 14:20--14:35 | Break                     | |
+| 14:35--16:00 | [Functions](content/03-functions/index.qmd)  | Heather Turner |
+:::
+
+## Schedule: Tuesday March 25th
+
+:::{.smaller90}
+| Time         | Session                           | Instructor |
+|--------------|-----------------------------------|-----------|
+| 10:00--11:15 | [Classes and Methods](content/04-classes-methods/index.qmd)   | Ella Kaye |
+| 11:15--11:30 | Break                      | |
+| 11:30--12:30 | [Efficient Programming](content/05-efficient-programming/index.qmd) | Ella Kaye |
+| 12:30--13:30 | Lunch break                             | |
+| 13:30--14:15 | [Profiling](content/06-profiling/index.qmd)             | Ella Kaye |
+| 14:15--14:30 | Coffee break                      | |
+| 14:30--16:00 | [C++ and Rcpp](content/07-r-with-cpp/index.qmd)          | Heather Turner |
+:::
+
+# Let's begin... {.inverse .center-h}
