@@ -14,7 +14,7 @@ The first three sessions of Warwick-Stats-Resources [R Foundations](https://warw
 
 ## git and GitHub
 
-Although there will be some time dedicated to this in the workshop, it would be advantageous if you already have:
+Please ensure you have:
 
 - `git` installed on your computer. See <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>
 - a [GitHub](https://github.com) account
