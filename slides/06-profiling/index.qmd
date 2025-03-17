@@ -29,15 +29,15 @@ terms of time and/or memory usage.
 
 Profiling stops the execution of code every few milliseconds and records 
 
- - The call stack: the function currently being executed, the function that it 
- was called from and so on up to the top-level function call.
- - The memory allocated and released since the last record.
- 
+- The call stack: the function currently being executed, the function that it 
+was called from and so on up to the top-level function call.
+- The memory allocated and released since the last record.
+
 We will use the **profvis** package to visualise profiling results.
 
 ## Example: nested pause functions
 
-The following code is saved in `profiling-example.R` and uses `profvis::pause()` 
+The following code is saved in `demos/profiling-example.R` and uses `profvis::pause()` 
 to wait 0.1s inside each function
 
 ```{r}
@@ -64,10 +64,10 @@ bottom_level <- function() {
 ## Using profvis
 
 Source the code to be profiled and pass the function call to be profiled to 
-`profvis()`
+`profvis()` (this is in `demos/profvis-example.R`)
 ```{r, eval = FALSE}
 library(profvis)
-source("profiling-example.R")
+source(here::here("demos", "profiling-example.R"))
 profvis(top_level())
 ```
 
