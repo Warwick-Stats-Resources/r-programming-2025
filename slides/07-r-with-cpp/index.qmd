@@ -48,17 +48,16 @@ The overhead of calling a function in C++ is much lower than in R.
 # Getting set up {.inverse}
 
 ## Set up to use C++
-
 To use C++, you need a working C++ compiler. 
 
 On MacOS/Windows there is some setup to do, but it will also set you up to
 
- - Develop packages in R
- - Install packages from GitHub that include  C/C++ code
+- Develop packages in R
+- Install packages from GitHub that include  C/C++ code
  
 On Linux, you will usually have a C++ compiler installed, but you might as well get set up to develop R packages too.
 
-::: {.notes}
+::: {.callout-note}
 If you’ve followed the development tools section of the course prerequisites, you should be fully set-up for this already.
 :::
 
@@ -77,17 +76,17 @@ Fedora/RedHat: should be set up already.
 
 Option 1
 
-- [Register as an Apple developer (for free)](https://developer.apple.com/programs/register/)
+- [Register as an Apple developer (for free)](https://developer.apple.com/programs/enroll/)
   - Then, in the terminal:
   
-     ```{.sh}
-     xcode-select --install
-     ```
+    ```{.sh}
+    xcode-select --install
+    ```
 
 Option 2 
 
 - Install the current release of full [Xcode from the Mac App Store](https://itunes.apple.com/ca/app/xcode/id497799835?mt=12)
- - Within XCode go to Preferences -> Downloads and install the Command Line Tools
+- Within XCode go to Preferences -> Downloads and install the Command Line Tools
 - More convenient but installs a lot you don't need
 
 ## Windows
@@ -114,10 +113,13 @@ double add_cpp(double x, double y) {
 }
 ```
 
+:::{.smaller90}
 - The type for the return value is declared first
 - The type of each argument must be declared
 - The type of intermediate objects must be declared
 - Return statements must use `return`
+- Every statement ends with `;`
+:::
 
 ## Rcpp
 
@@ -198,12 +200,12 @@ There are a number of benefits to writing C++ code in separate `.cpp` files, com
 
 ## C++ Basics
 
- - Every statement within `{` `}` must be terminated by a `;`.
- - Use `=` for assignment (`<-` is not valid).
- - Addition, subtraction, multiplication and division use the same operators as R (`+`, `-`, `*`, `/`).
- - Comparison operators are the same as R (`==`, `!=`, `>`, etc)
- - One-line comments start with `//`.
- - Multi-line comments use `/*` `*/` delimiters
+- Every statement within `{` `}` must be terminated by a `;`.
+- Use `=` for assignment (`<-` is not valid).
+- Addition, subtraction, multiplication and division use the same operators as R (`+`, `-`, `*`, `/`).
+- Comparison operators are the same as R (`==`, `!=`, `>`, etc)
+- One-line comments start with `//`.
+- Multi-line comments use `/*` `*/` delimiters
  
 ```{.cpp}
 /*
@@ -231,8 +233,8 @@ The basic C++ data types are scalars. **Rcpp** provides vector versions
 :::{.notes}
 Care needed with NA
 double: more bits used to represent a real number vs single precision
- - range 2^-(2^10) to 2^(2^10). vs same with 2^7
- - precision ~15 d.p. vs 7
+- range 2^-(2^10) to 2^(2^10). vs same with 2^7
+- precision ~15 d.p. vs 7
 ::: 
 
 ## Example: no inputs, scalar output
@@ -319,7 +321,7 @@ NumericVector distC(double x, NumericVector y) {
   int n = y.size();
   NumericVector dist(n);
   for(int i = 0; i < n; ++i) {
-    dist[i] = sqrt(pow(ys[i] - x, 2.0));
+    dist[i] = sqrt(pow(y[i] - x, 2.0));
   }
   return out;
 }
@@ -341,7 +343,7 @@ To use `<cmath>` functions in C++ code, we would normally need to include the `<
 From the menu bar:
 
 - Go to File > New File > C++ file
-- This template already incleas the headers required for Rcpp
+- This template already includes the headers required for Rcpp
 - Delete the extra content, apart from the comment `//[Rcpp::export]`
 
 You can also create a C++ file from the new file drop-down in the Files pane, but this will be blank. 
@@ -436,7 +438,7 @@ NumericVector rowSumsC(NumericMatrix x) {
 
 As in R, **Rcpp** provides d/p/q/r functions for the density, distribution function, quantile function and random generation.
 
-- Functions in the `Rcpp::` namespace return a vector.
+- Functions in the `Rcpp::` namespace return a vector
 - Functions in the `R::` namespace (also provided by the **Rcpp** R package) return a scalar
 
 For example we can sample a single value from a Gamma distribution by extracting the first element from a vector
@@ -517,7 +519,7 @@ Benchmark your `gibbs_r()` and `gibbs_c()` functions with N = 100 and thin = 10,
 
 Rcpp provides some "syntactic sugar" to allow us to write C++ code that is more like R code.
 
-One example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a `NumericMatrix`. Rcpp lets us extract an update whole rows/columns, e.g. in a matrix with three columns, we can set the $i$th row with
+One example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a `NumericMatrix`. Rcpp lets us extract and update whole rows/columns, e.g. in a matrix with three columns, we can set the $i$th row with
 
 ```{Rcpp, eval = FALSE}
 mat(i, _) = NumericVector::create(1, 2, 3);
