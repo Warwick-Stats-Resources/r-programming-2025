@@ -4,7 +4,7 @@
     "href": "content.html",
     "title": "Content",
     "section": "",
-    "text": "Date\n\n\nTitle\n\n\n\n\n\n\nMar 24, 2025\n\n\nWelcome and Introduction\n\n\n\n\nMar 24, 2025\n\n\nOpen Source and Git(Hub)\n\n\n\n\nMar 24, 2025\n\n\nFunctions\n\n\n\n\nMar 25, 2025\n\n\nClasses and Methods\n\n\n\n\nMar 25, 2025\n\n\nEfficient Programming\n\n\n\n\nMar 25, 2025\n\n\nSlides\n\n\n\n\nMar 25, 2025\n\n\nC++ and Rcpp\n\n\n\n\n\nNo matching items"
+    "text": "Date\n\n\nTitle\n\n\n\n\n\n\nMar 24, 2025\n\n\nWelcome and Introduction\n\n\n\n\nMar 24, 2025\n\n\nOpen Source and Git(Hub)\n\n\n\n\nMar 24, 2025\n\n\nFunctions\n\n\n\n\nMar 25, 2025\n\n\nClasses and Methods\n\n\n\n\nMar 25, 2025\n\n\nEfficient Programming\n\n\n\n\nMar 25, 2025\n\n\nProfiling\n\n\n\n\nMar 25, 2025\n\n\nC++ and Rcpp\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "join.html",
@@ -130,14 +130,21 @@
     "href": "slides/05-efficient-programming/index.html#growing-objects",
     "title": "Efficient Programming",
     "section": "Growing Objects",
-    "text": "Growing Objects\nAdding to an object in a loop\n\nres &lt;- NULL\nfor (i in 1:5000) res &lt;- c(res, 1)\n\nmay force a copy to be made at each iteration, with each copy stored until the loop has completed.\n\nIt is far better to create an object of the necessary size first\n\nres &lt;- numeric(5000)\nfor (i in seq_along(res)) res[i] &lt;- 1\n\nTo initialise a list we can use\n\nres &lt;- vector(mode = \"list\", length = 100)"
+    "text": "Growing Objects\nAdding to an object in a loop\n\nres &lt;- NULL\nfor (i in 1:5000) res &lt;- c(res, 1)\n\nmay force a copy to be made at each iteration, with each copy stored until the loop has completed.\n\nIt is far better to create an object of the necessary size first\n\nres &lt;- numeric(5000)\nfor (i in seq_along(res)) res[i] &lt;- 1\n\n\n\nTo initialise a list we can use\n\nres &lt;- vector(mode = \"list\", length = 100)"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#copy-on-change",
     "href": "slides/05-efficient-programming/index.html#copy-on-change",
     "title": "Efficient Programming",
     "section": "Copy-on-Change",
-    "text": "Copy-on-Change\nR usually copies an object to make changes to it.\ntracemem can be used to trace copies of an object\n\nz &lt;- NULL\nfor (i in 1:3){ z &lt;- c(z,1); print(tracemem(z)) }\n\n[1] \"&lt;0x122220648&gt;\"\n[1] \"&lt;0x11940ba08&gt;\"\n[1] \"&lt;0x127b9b9c8&gt;\"\n\n\nz &lt;- numeric(2); print(tracemem(z))\n\n[1] \"&lt;0x1193ce2c8&gt;\"\n\n\n\nfor (i in 1:2){ z[i] &lt;- i;print(tracemem(z)) }\n\ntracemem[0x1193ce2c8 -&gt; 0x135159648]: \n[1] \"&lt;0x135159648&gt;\"\n[1] \"&lt;0x135159648&gt;\"\n\nmakes copy for each separate block of code e.g. if run with above in one go interactively no copies if run in separate chunks 1 copy"
+    "text": "Copy-on-Change\nR usually copies an object to make changes to it.\ntracemem can be used to trace copies of an object\n\nz &lt;- NULL\nfor (i in 1:3) { \n  z &lt;- c(z,1)\n  print(tracemem(z)) \n}\n\n[1] \"&lt;0x122220648&gt;\"\n[1] \"&lt;0x11940ba08&gt;\"\n[1] \"&lt;0x127b9b9c8&gt;\""
+  },
+  {
+    "objectID": "slides/05-efficient-programming/index.html#copy-on-change-pre-allocated",
+    "href": "slides/05-efficient-programming/index.html#copy-on-change-pre-allocated",
+    "title": "Efficient Programming",
+    "section": "Copy-on-change (pre-allocated)",
+    "text": "Copy-on-change (pre-allocated)\n\nz &lt;- numeric(2)\nprint(tracemem(z))\n\n[1] \"&lt;0x167fb48c8&gt;\"\n\n\nfor (i in 1:2) {\n  z[i] &lt;- i\n  print(tracemem(z)) \n}\n\ntracemem[0x167fb48c8 -&gt; 0x167fa90c8]: \n[1] \"&lt;0x167fa90c8&gt;\"\n[1] \"&lt;0x167fa90c8&gt;\"\n\nmakes copy for each separate block of code e.g. if run with above in one go interactively no copies if run in separate chunks 1 copy"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#benchmarking-1",
@@ -151,7 +158,7 @@
     "href": "slides/05-efficient-programming/index.html#benchmark",
     "title": "Efficient Programming",
     "section": "bench::mark()",
-    "text": "bench::mark()\nRun the two alternatives with bench::mark(). This function\n\nRuns alternatives ≥ 1 time; at most enough times to take 0.5s\nMakes sure the two expressions return the same result!\n\n\n\nlibrary(bench)\n(bm &lt;- bench::mark(grow(5000), pre_specify(5000)))\n\nWarning: Some expressions had a GC in every iteration; so filtering is\ndisabled.\n\n\n# A tibble: 2 × 6\n  expression             min   median `itr/sec` mem_alloc `gc/sec`\n  &lt;bch:expr&gt;        &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;\n1 grow(5000)          25.1ms   28.5ms      34.8    95.6MB    63.8 \n2 pre_specify(5000)  100.3µs  103.5µs    9163.     55.7KB     7.96\n\n\n\nGC is the garbage collector which tidies up deleted objects\nitr/sec is how many times the expression could be run in 1s"
+    "text": "bench::mark()\nRun the two alternatives with bench::mark(). This function\n\nRuns alternatives ≥ 1 time; at most enough times to take 0.5s\nMakes sure the two expressions return the same result!\n\n\n\nlibrary(bench)\n(bm &lt;- bench::mark(grow(5000), pre_specify(5000)))\n\nWarning: Some expressions had a GC in every iteration; so filtering is\ndisabled.\n\n\n# A tibble: 2 × 6\n  expression             min   median `itr/sec` mem_alloc `gc/sec`\n  &lt;bch:expr&gt;        &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;\n1 grow(5000)          26.9ms   29.8ms      33.1    95.6MB    60.4 \n2 pre_specify(5000)  100.3µs  108.4µs    8889.     55.7KB     8.00\n\n\n\nGC is the garbage collector which tidies up deleted objects\nitr/sec is how many times the expression could be run in 1s"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#plotting-benchmarks",
@@ -172,7 +179,7 @@
     "href": "slides/05-efficient-programming/index.html#benchpress",
     "title": "Efficient Programming",
     "section": "bench::press()",
-    "text": "bench::press()\n\n\nbench::press(n = c(10, 100), k = c(10, 1),\n  bench::mark(gl(n, k, length = 1000)) # `gl` generates factor levels\n)\n\nRunning with:\n      n     k\n\n\n1    10    10\n\n\n2   100    10\n\n\n3    10     1\n\n\n4   100     1\n\n\n# A tibble: 4 × 8\n  expression                  n     k    min median `itr/sec` mem_alloc `gc/sec`\n  &lt;bch:expr&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;bch:&gt; &lt;bch:&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;\n1 gl(n, k, length = 1000)    10    10  3.2µs 3.69µs   251898.    12.4KB     25.2\n2 gl(n, k, length = 1000)   100    10 9.14µs 9.76µs    98840.   11.05KB     19.8\n3 gl(n, k, length = 1000)    10     1 2.91µs 3.24µs   296511.    3.95KB     29.7\n4 gl(n, k, length = 1000)   100     1 6.11µs 6.72µs   143192.    7.53KB     14.3"
+    "text": "bench::press()\n\n\nbench::press(n = c(10, 100, 1000), k = c(100, 10, 1),\n  bench::mark(gl(n, k, length = 1000)) # `gl` generates factor levels\n)\n\n# A tibble: 9 × 8\n  expression              n     k      min   median `itr/sec` mem_alloc `gc/sec`\n  &lt;bch:expr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;\n1 gl(n, k, length = …    10   100   6.31µs   7.22µs   132845.   15.91KB     13.3\n2 gl(n, k, length = …   100   100  40.18µs  45.22µs    21975.    46.2KB     21.8\n3 gl(n, k, length = …  1000   100 407.13µs 450.57µs     2229.  422.34KB     21.6\n4 gl(n, k, length = …    10    10   3.24µs   3.73µs   256855.    4.39KB     25.7\n5 gl(n, k, length = …   100    10   9.43µs  10.46µs    91904.   11.05KB     18.4\n6 gl(n, k, length = …  1000    10 102.58µs 112.55µs     8879.   70.78KB     12.7\n7 gl(n, k, length = …    10     1   2.99µs   3.32µs   284092.    3.95KB     28.4\n8 gl(n, k, length = …   100     1   6.44µs   7.05µs   134715.    7.53KB     26.9\n9 gl(n, k, length = …  1000     1  72.65µs  76.22µs    12946.   35.62KB     10.4\n\n\n\n\nn: an integer giving the number of levels.\nk: an integer giving the number of replications.\nLittle difference when increasing k for a given n Bigger difference when increasing n for a given k"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#exercise-1",
@@ -214,14 +221,14 @@
     "href": "slides/05-efficient-programming/index.html#ifelse",
     "title": "Efficient Programming",
     "section": "ifelse()",
-    "text": "ifelse()\nifelse is a vectorised version of if and else blocks\n\nx &lt;- c(5, 2, 9, 12)\nifelse(x &gt; 6, 2 * x, 3 * x)\n\n[1] 15  6 18 24\n\n\nRecycling is also very useful here\n\nx &lt;- 1:10\nifelse(x %% 2 == 0, 5, 12)\n\n [1] 12  5 12  5 12  5 12  5 12  5\n\n\nHowever indexing is more efficient than ifelse\n\ny &lt;- rep.int(12, 10)\ny[x %% 2 == 0] &lt;- 5\ny\n\n [1] 12  5 12  5 12  5 12  5 12  5"
+    "text": "ifelse()\nifelse is a vectorised version of if and else blocks\n\nx &lt;- c(5, 2, 9, 12)\nifelse(x &lt; 6, 2 * x, 3 * x)\n\n[1] 10  4 27 36\n\n\nRecycling is also very useful here\n\nx &lt;- 1:10\nifelse(x %% 2 == 0, 5, 12)\n\n [1] 12  5 12  5 12  5 12  5 12  5\n\n\nHowever indexing is more efficient than ifelse\n\ny &lt;- rep.int(12, 10)\ny[x %% 2 == 0] &lt;- 5\ny\n\n [1] 12  5 12  5 12  5 12  5 12  5"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#logical-operations",
     "href": "slides/05-efficient-programming/index.html#logical-operations",
     "title": "Efficient Programming",
     "section": "Logical operations",
-    "text": "Logical operations\nLogical operators such as & and | are vectorized, e.g.\n\nx &lt;- c(1, 0.6, 1.2, 0.4, 0.5)\nx &gt; 0.4 & x &lt; 0.8\n\n[1] FALSE  TRUE FALSE FALSE  TRUE\n\n\nIf we only want to compare vectors of length 1 the operators && and || are more efficient as they only compute the RHS if needed\n\nx[1] &gt; 0.4 && x[1] &lt; 0.8\n\n[1] FALSE\n\n\nMake sure the vectors are of length 1, otherwise you get an error. This change was introduced in R ≥ 4.3.\n\nx &gt; 0.4 && x &lt; 0.8\n\nError in x &gt; 0.4 && x &lt; 0.8: 'length = 5' in coercion to 'logical(1)'\n\n\n\nIn R &ge 4.2.0 you get a warning but it still returns a comparison of only the first element. In earlier versions, there was no warning."
+    "text": "Logical operations\nLogical operators such as & and | are vectorized, e.g.\n\nx &lt;- c(0.3, 1, 0.6, 1.2, 0.4, 0.5)\nx &gt; 0.4 & x &lt; 0.8\n\n[1] FALSE FALSE  TRUE FALSE FALSE  TRUE\n\n\nIf we only want to compare vectors of length 1 the operators && and || are more efficient as they only compute the RHS if needed\n\nx[1] &gt; 0.4 && x[1] &lt; 0.8\n\n[1] FALSE\n\n\nMake sure the vectors are of length 1, otherwise you get an error. This change was introduced in R ≥ 4.3.\n\nx &gt; 0.4 && x &lt; 0.8\n\nError in x &gt; 0.4 && x &lt; 0.8: 'length = 6' in coercion to 'logical(1)'\n\n\n\nIn R &ge 4.2.0 you get a warning but it still returns a comparison of only the first element. In earlier versions, there was no warning."
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#vectorization-and-matrices",
@@ -284,7 +291,7 @@
     "href": "slides/05-efficient-programming/index.html#exercise-2-continued",
     "title": "Efficient Programming",
     "section": "Exercise 2 (continued)",
-    "text": "Exercise 2 (continued)\nThe for loop in the previous code is suitable for vectorization: the iterations are completely independent.\nrnorm() is vectorized in the arguments mu and sd, e.g. to simulate a value from the 1st and 3rd component we could write:\n\nmu &lt;- c(0, 10, 3)\nsd &lt;- sqrt(c(1, 1, 0.1))\nrnorm(2, mu[c(1, 3)], sd[c(1, 3)])\n\n[1] 1.624182 3.239592\n\n\nUse this information to replace the for loop, using a single call to rnorm() to simulate n values from the mixture distribution.\nUse bench::mark() to compare the two approaches - don’t forget to set the same seed so the simulations are equivalent!"
+    "text": "Exercise 2 (continued)\nThe for loop in the previous code is suitable for vectorization: the iterations are completely independent.\nrnorm() is vectorized in the arguments mu and sd, e.g. to simulate a value from the 1st and 3rd component we could write:\n\nmu &lt;- c(0, 10, 3)\nsd &lt;- sqrt(c(1, 1, 0.1))\nrnorm(2, mu[c(1, 3)], sd[c(1, 3)])\n\n[1] -0.7286473  2.6902506\n\n\nUse this information to replace the for loop, using a single call to rnorm() to simulate n values from the mixture distribution.\nUse bench::mark() to compare the two approaches - don’t forget to set the same seed so the simulations are equivalent!"
   },
   {
     "objectID": "slides/05-efficient-programming/index.html#parallelisation-1",
@@ -504,13 +511,6 @@
     "text": "Creating an S3 object with class()\nAlternatively, we can add a class attribute using the class() helper function:\n\npi2dp &lt;- list(pi = trunc(10^dp * pi)/10^dp, dp = dp)\nclass(pi2dp) &lt;- \"pi_trunc\"\npi2dp\n\n$pi\n[1] 3.14\n\n$dp\n[1] 2\n\nattr(,\"class\")\n[1] \"pi_trunc\""
   },
   {
-    "objectID": "slides/04-classes-methods/index.html#warning",
-    "href": "slides/04-classes-methods/index.html#warning",
-    "title": "Classes and Methods",
-    "section": "Warning!",
-    "text": "Warning!\nS3 has no checks for correctness, so we can change the class of objects.\nThis is a bad idea!\n\nmod &lt;- lm(flipper_length_mm ~ bill_length_mm, data = penguins)\nclass(mod)\n\n[1] \"lm\"\n\nclass(mod) &lt;- \"Date\"\nprint(mod)\n\nError in as.POSIXlt(.Internal(Date2POSIXlt(x, tz)), tz = tz): 'list' object cannot be coerced to type 'double'\n\n\n\n\nR doesn’t stop you from shooting yourself in the foot, but as long as you don’t aim the gun at your toes and pull the trigger, you won’t have a problem."
-  },
-  {
     "objectID": "slides/04-classes-methods/index.html#creating-your-own-classes",
     "href": "slides/04-classes-methods/index.html#creating-your-own-classes",
     "title": "Classes and Methods",
@@ -529,7 +529,7 @@
     "href": "slides/04-classes-methods/index.html#s3-generic-functions",
     "title": "Classes and Methods",
     "section": "S3 generic functions",
-    "text": "S3 generic functions\nS3 generic functions are simple wrappers to UseMethod()\n\nprint\n\nfunction (x, ...) \nUseMethod(\"print\")\n&lt;bytecode: 0x107618f28&gt;\n&lt;environment: namespace:base&gt;"
+    "text": "S3 generic functions\nS3 generic functions are simple wrappers to UseMethod()\n\nprint\n\nfunction (x, ...) \nUseMethod(\"print\")\n&lt;bytecode: 0x12abe8328&gt;\n&lt;environment: namespace:base&gt;"
   },
   {
     "objectID": "slides/04-classes-methods/index.html#usemethod",
@@ -578,7 +578,7 @@
     "href": "slides/04-classes-methods/index.html#view-s3-methods",
     "title": "Classes and Methods",
     "section": "View S3 methods",
-    "text": "View S3 methods\nS3 methods need not be in the same package as the generic.\nFind an unexported method with getS3method() or sloop::s3_get_method()\n\ngetS3method(\"coef\", \"default\")\n\nfunction (object, complete = TRUE, ...) \n{\n    cf &lt;- object$coefficients\n    if (complete) \n        cf\n    else cf[!is.na(cf)]\n}\n&lt;bytecode: 0x12087e768&gt;\n&lt;environment: namespace:stats&gt;\n\n\n\ns3_get_method(\"coef.default\") # equivalent\n\n\nCan view code for exported functions by just typing the function name, or, in RStudio, using View(function_name)"
+    "text": "View S3 methods\nS3 methods need not be in the same package as the generic.\nFind an unexported method with getS3method() or sloop::s3_get_method()\n\ngetS3method(\"coef\", \"default\")\n\nfunction (object, complete = TRUE, ...) \n{\n    cf &lt;- object$coefficients\n    if (complete) \n        cf\n    else cf[!is.na(cf)]\n}\n&lt;bytecode: 0x1181054d8&gt;\n&lt;environment: namespace:stats&gt;\n\n\n\ns3_get_method(\"coef.default\") # equivalent\n\n\nCan view code for exported functions by just typing the function name, or, in RStudio, using View(function_name)"
   },
   {
     "objectID": "slides/04-classes-methods/index.html#writing-s3-methods",
@@ -613,7 +613,7 @@
     "href": "slides/04-classes-methods/index.html#your-turn-part-1",
     "title": "Classes and Methods",
     "section": "Your turn (part 1)",
-    "text": "Your turn (part 1)\n\nCreate a function to fit an ordinary least squares model given a response y and an explanatory variable x, that returns an object of a new class \"ols\", that inherits from \"lm\".\nDefine a print method for your function that it works as follows:\n\n\nset.seed(1)\nres &lt;- ols(x = 1:3, y = rnorm(3))\nres\n\nIntercept:  -0.217 \nSlope:  -0.1046 \n\n\nNote: I have set options(digits = 4) to limit the number of digits printed by default throughout this presentation (default is 7)."
+    "text": "Your turn (part 1)\n\nCreate a function to fit an ordinary least squares model (using lm()) given a response y and an explanatory variable x, that returns an object of a new class \"ols\", that inherits from \"lm\".\nDefine a print method for your function that it works as follows:\n\n\nset.seed(1)\nres &lt;- ols(x = 1:3, y = rnorm(3))\nres\n\nIntercept:  -0.217 \nSlope:  -0.1046 \n\n\nNote: I have set options(digits = 4) to limit the number of digits printed by default throughout this presentation (default is 7)."
   },
   {
     "objectID": "slides/04-classes-methods/index.html#nextmethod",
@@ -634,7 +634,7 @@
     "href": "slides/04-classes-methods/index.html#a-first-attempt-at-a-solution",
     "title": "Classes and Methods",
     "section": "A first attempt at a solution",
-    "text": "A first attempt at a solution\nSo, need to defined a [.secret method.\nBut the following doesn’t work:\n\n`[.secret` &lt;- function(x, i) {\n  new_secret(x[i])\n}\nx[1]\n\nIt gets stuck in infinite loop.\n\nTrying to subset x then call new_secret on it, to give it the secret class, so that print.secret works on said subset."
+    "text": "A first attempt at a solution\nSo, need to defined a [.secret method.\nBut the following doesn’t work:\n\n`[.secret` &lt;- function(x, i) {\n  new_secret(x[i])\n}\nx[1]\n\nIt gets stuck in infinite loop.\n\nTrying to subset x then call new_secret on it, to give it the secret class, so that print.secret works on said subset.\nBut get infinite loop because using [ in definition"
   },
   {
     "objectID": "slides/04-classes-methods/index.html#whats-the-fix",
@@ -662,35 +662,7 @@
     "href": "slides/04-classes-methods/index.html#underlying-code",
     "title": "Classes and Methods",
     "section": "Underlying code",
-    "text": "Underlying code\n\nt.data.frame\n\nfunction (x) \n{\n    x &lt;- as.matrix(x)\n    NextMethod(\"t\")\n}\n&lt;bytecode: 0x1058e0788&gt;\n&lt;environment: namespace:base&gt;\n\n\n\ns3_dispatch(t(data))\n\n=&gt; t.data.frame\n-&gt; t.default\n\n\n\nWe can explicitly call the next method that would be called by UseMethod() to reuse code whilst customising as required.\n\nWe have seen that UseMethod() will dispatch to the method of the next class in the class vector if a method is not defined for the first class."
-  },
-  {
-    "objectID": "slides/04-classes-methods/index.html#implicit-classes",
-    "href": "slides/04-classes-methods/index.html#implicit-classes",
-    "title": "Classes and Methods",
-    "section": "Implicit classes",
-    "text": "Implicit classes\nAs we’ve seen, is.object() or sloop::otype() can be used to find out if an object has a class (S3/S4/R6)\n\nis.object(factor(1:3))\n\n[1] TRUE\n\nis.object(1:3)\n\n[1] FALSE\n\n\nAn object that does not have an explicit class has an implicit class that will be used for S3 method dispatch."
-  },
-  {
-    "objectID": "slides/04-classes-methods/index.html#implicit-classes-and-dispatch",
-    "href": "slides/04-classes-methods/index.html#implicit-classes-and-dispatch",
-    "title": "Classes and Methods",
-    "section": "Implicit classes and dispatch",
-    "text": "Implicit classes and dispatch\nThe implicit class can be found with .class2(), or sloop::s3_class()\n\nM &lt;- matrix(1:12, nrow = 4)\nattr(M, \"class\")\n\nNULL\n\n.class2(M)\n\n[1] \"matrix\"  \"array\"   \"integer\" \"numeric\"\n\ns3_class(M)\n\n[1] \"matrix\"  \"integer\" \"numeric\"\n\n\nThe class() of an object does not uniquely determine its dispatch:\n\ns3_dispatch(print(M))\n\n   print.matrix\n   print.integer\n   print.numeric\n=&gt; print.default\n\n\n\n.class2 since R 4.0.0."
-  },
-  {
-    "objectID": "slides/04-classes-methods/index.html#attributes",
-    "href": "slides/04-classes-methods/index.html#attributes",
-    "title": "Classes and Methods",
-    "section": "Attributes",
-    "text": "Attributes\n\nWe can take advantage of existing S3 methods by returning an object of a existing S3 class or an implicit class, using attributes to add custom information\n\nx &lt;- matrix(c(1:5, 2*(1:5)), ncol = 2)\ncenter_x &lt;- scale(x, scale = FALSE)\nclass(center_x)\n\n[1] \"matrix\" \"array\" \n\nsummary(center_x)\n\n       V1           V2    \n Min.   :-2   Min.   :-4  \n 1st Qu.:-1   1st Qu.:-2  \n Median : 0   Median : 0  \n Mean   : 0   Mean   : 0  \n 3rd Qu.: 1   3rd Qu.: 2  \n Max.   : 2   Max.   : 4  \n\n\n\nattr(center_x, \"scaled:center\")\n\n[1] 3 6\n\n\nThis can avoid the need to define new classes and methods, in simple cases.\n\n\nattr(x, \"scaled:center\") in NULL\ncenter_x is still a matrix, and so summary(center_x) dispatches to summary.matrix. We can take advantage of the methods for matrix, without needing to define a new class for scaled."
-  },
-  {
-    "objectID": "slides/04-classes-methods/index.html#under-the-hood",
-    "href": "slides/04-classes-methods/index.html#under-the-hood",
-    "title": "Classes and Methods",
-    "section": "Under the hood",
-    "text": "Under the hood\n\ns3_dispatch(scale(x, scale = FALSE))\n\n   scale.matrix\n   scale.double\n   scale.numeric\n=&gt; scale.default\n\n\n\ns3_dispatch(summary(center_x))\n\n=&gt; summary.matrix\n   summary.double\n   summary.numeric\n * summary.default\n\n\n\nView(scale.default)\n\n\nIn scale.default() the attribute \"scaled:center\" is added to the x argument, so essentially, center_x is a matrix with extra information (in this case, the colMeans of the original columns)."
+    "text": "Underlying code\n\nt.data.frame\n\nfunction (x) \n{\n    x &lt;- as.matrix(x)\n    NextMethod(\"t\")\n}\n&lt;bytecode: 0x10a2dfbc0&gt;\n&lt;environment: namespace:base&gt;\n\n\n\ns3_dispatch(t(data))\n\n=&gt; t.data.frame\n-&gt; t.default\n\n\n\nWe can explicitly call the next method that would be called by UseMethod() to reuse code whilst customising as required.\n\nWe have seen that UseMethod() will dispatch to the method of the next class in the class vector if a method is not defined for the first class."
   },
   {
     "objectID": "slides/04-classes-methods/index.html#your-turn-part-2",
@@ -742,6 +714,41 @@
     "text": "License\nLicensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)."
   },
   {
+    "objectID": "slides/04-classes-methods/index.html#implicit-classes",
+    "href": "slides/04-classes-methods/index.html#implicit-classes",
+    "title": "Classes and Methods",
+    "section": "Implicit classes",
+    "text": "Implicit classes\nAs we’ve seen, is.object() or sloop::otype() can be used to find out if an object has a class (S3/S4/R6)\n\nis.object(factor(1:3))\n\n[1] TRUE\n\nis.object(1:3)\n\n[1] FALSE\n\n\nAn object that does not have an explicit class has an implicit class that will be used for S3 method dispatch."
+  },
+  {
+    "objectID": "slides/04-classes-methods/index.html#implicit-classes-and-dispatch",
+    "href": "slides/04-classes-methods/index.html#implicit-classes-and-dispatch",
+    "title": "Classes and Methods",
+    "section": "Implicit classes and dispatch",
+    "text": "Implicit classes and dispatch\nThe implicit class can be found with .class2(), or sloop::s3_class()\n\nM &lt;- matrix(1:12, nrow = 4)\nattr(M, \"class\")\n\nNULL\n\n.class2(M)\n\n[1] \"matrix\"  \"array\"   \"integer\" \"numeric\"\n\ns3_class(M)\n\n[1] \"matrix\"  \"integer\" \"numeric\"\n\n\nThe class() of an object does not uniquely determine its dispatch:\n\ns3_dispatch(print(M))\n\n   print.matrix\n   print.integer\n   print.numeric\n=&gt; print.default\n\n\n\n.class2 since R 4.0.0."
+  },
+  {
+    "objectID": "slides/04-classes-methods/index.html#attributes",
+    "href": "slides/04-classes-methods/index.html#attributes",
+    "title": "Classes and Methods",
+    "section": "Attributes",
+    "text": "Attributes\n\nWe can take advantage of existing S3 methods by returning an object of a existing S3 class or an implicit class, using attributes to add custom information\n\nx &lt;- matrix(c(1:5, 2*(1:5)), ncol = 2)\ncenter_x &lt;- scale(x, scale = FALSE)\nclass(center_x)\n\n[1] \"matrix\" \"array\" \n\nsummary(center_x)\n\n       V1           V2    \n Min.   :-2   Min.   :-4  \n 1st Qu.:-1   1st Qu.:-2  \n Median : 0   Median : 0  \n Mean   : 0   Mean   : 0  \n 3rd Qu.: 1   3rd Qu.: 2  \n Max.   : 2   Max.   : 4  \n\n\n\nattr(center_x, \"scaled:center\")\n\n[1] 3 6\n\n\nThis can avoid the need to define new classes and methods, in simple cases.\n\n\nattr(x, \"scaled:center\") in NULL\ncenter_x is still a matrix, and so summary(center_x) dispatches to summary.matrix. We can take advantage of the methods for matrix, without needing to define a new class for scaled."
+  },
+  {
+    "objectID": "slides/04-classes-methods/index.html#under-the-hood",
+    "href": "slides/04-classes-methods/index.html#under-the-hood",
+    "title": "Classes and Methods",
+    "section": "Under the hood",
+    "text": "Under the hood\n\ns3_dispatch(scale(x, scale = FALSE))\n\n   scale.matrix\n   scale.double\n   scale.numeric\n=&gt; scale.default\n\n\n\ns3_dispatch(summary(center_x))\n\n=&gt; summary.matrix\n   summary.double\n   summary.numeric\n * summary.default\n\n\n\nView(scale.default)\n\n\nIn scale.default() the attribute \"scaled:center\" is added to the x argument, so essentially, center_x is a matrix with extra information (in this case, the colMeans of the original columns)."
+  },
+  {
+    "objectID": "slides/04-classes-methods/index.html#warning",
+    "href": "slides/04-classes-methods/index.html#warning",
+    "title": "Classes and Methods",
+    "section": "Warning!",
+    "text": "Warning!\nS3 has no checks for correctness, so we can change the class of objects.\nThis is a bad idea!\n\nmod &lt;- lm(flipper_length_mm ~ bill_length_mm, data = penguins)\nclass(mod)\n\n[1] \"lm\"\n\nclass(mod) &lt;- \"Date\"\nprint(mod)\n\nError in as.POSIXlt(.Internal(Date2POSIXlt(x, tz)), tz = tz): 'list' object cannot be coerced to type 'double'\n\n\n\n\nR doesn’t stop you from shooting yourself in the foot, but as long as you don’t aim the gun at your toes and pull the trigger, you won’t have a problem."
+  },
+  {
     "objectID": "slides/07-r-with-cpp/index.html#overview",
     "href": "slides/07-r-with-cpp/index.html#overview",
     "title": "C++ and Rcpp",
@@ -767,7 +774,7 @@
     "href": "slides/07-r-with-cpp/index.html#set-up-to-use-c",
     "title": "C++ and Rcpp",
     "section": "Set up to use C++",
-    "text": "Set up to use C++\nTo use C++, you need a working C++ compiler.\nOn MacOS/Windows there is some setup to do, but it will also set you up to\n\nDevelop packages in R\nInstall packages from GitHub that include C/C++ code\n\nOn Linux, you will usually have a C++ compiler installed, but you might as well get set up to develop R packages too.\n\nIf you’ve followed the development tools section of the course prerequisites, you should be fully set-up for this already."
+    "text": "Set up to use C++\nTo use C++, you need a working C++ compiler.\nOn MacOS/Windows there is some setup to do, but it will also set you up to\n\nDevelop packages in R\nInstall packages from GitHub that include C/C++ code\n\nOn Linux, you will usually have a C++ compiler installed, but you might as well get set up to develop R packages too.\n\n\n\n\n\n\nNote\n\n\nIf you’ve followed the development tools section of the course prerequisites, you should be fully set-up for this already."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#linux",
@@ -795,7 +802,7 @@
     "href": "slides/07-r-with-cpp/index.html#a-first-c-function",
     "title": "C++ and Rcpp",
     "section": "A first C++ function",
-    "text": "A first C++ function\nConsider an R function add_r() to add two numbers\n\nadd_r &lt;- function(x, y) x + y\n\nHere’s how we might write an equivalent add_cpp() function in C++\n\ndouble add_cpp(double x, double y) { \n  double value = x + y;\n  return value;\n}\n\n\nThe type for the return value is declared first\nThe type of each argument must be declared\nThe type of intermediate objects must be declared\nReturn statements must use return"
+    "text": "A first C++ function\nConsider an R function add_r() to add two numbers\n\nadd_r &lt;- function(x, y) x + y\n\nHere’s how we might write an equivalent add_cpp() function in C++\n\ndouble add_cpp(double x, double y) { \n  double value = x + y;\n  return value;\n}\n\n\n\nThe type for the return value is declared first\nThe type of each argument must be declared\nThe type of intermediate objects must be declared\nReturn statements must use return\nEvery statement ends with ;"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#rcpp",
@@ -809,7 +816,7 @@
     "href": "slides/07-r-with-cpp/index.html#using-the-c-function",
     "title": "C++ and Rcpp",
     "section": "Using the C++ function",
-    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x103088600&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
+    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x100d8c680&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#stand-alone-c-files",
@@ -893,7 +900,7 @@
     "href": "slides/07-r-with-cpp/index.html#example-vector-output",
     "title": "C++ and Rcpp",
     "section": "Example: vector output",
-    "text": "Example: vector output\nThe following computes the Euclidean distances\n\\[d_i  = \\sqrt{(x - y_i)^2}\\]\n\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector dist(n);\n  for(int i = 0; i &lt; n; ++i) {\n    dist[i] = sqrt(pow(ys[i] - x, 2.0));\n  }\n  return out;\n}\n\n\ndist(n) is used to create a numeric vector named dist of length n.\nv(n) would create a vector named v."
+    "text": "Example: vector output\nThe following computes the Euclidean distances\n\\[d_i  = \\sqrt{(x - y_i)^2}\\]\n\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector dist(n);\n  for(int i = 0; i &lt; n; ++i) {\n    dist[i] = sqrt(pow(y[i] - x, 2.0));\n  }\n  return out;\n}\n\n\ndist(n) is used to create a numeric vector named dist of length n.\nv(n) would create a vector named v."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#c-functions",
@@ -907,7 +914,7 @@
     "href": "slides/07-r-with-cpp/index.html#creating-a-c-file-in-rstudio",
     "title": "C++ and Rcpp",
     "section": "Creating a C++ file in RStudio",
-    "text": "Creating a C++ file in RStudio\nFrom the menu bar:\n\nGo to File &gt; New File &gt; C++ file\nThis template already incleas the headers required for Rcpp\nDelete the extra content, apart from the comment //[Rcpp::export]\n\nYou can also create a C++ file from the new file drop-down in the Files pane, but this will be blank."
+    "text": "Creating a C++ file in RStudio\nFrom the menu bar:\n\nGo to File &gt; New File &gt; C++ file\nThis template already includes the headers required for Rcpp\nDelete the extra content, apart from the comment //[Rcpp::export]\n\nYou can also create a C++ file from the new file drop-down in the Files pane, but this will be blank."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#your-turn",
@@ -949,7 +956,7 @@
     "href": "slides/07-r-with-cpp/index.html#statistical-distributions",
     "title": "C++ and Rcpp",
     "section": "Statistical distributions",
-    "text": "Statistical distributions\nAs in R, Rcpp provides d/p/q/r functions for the density, distribution function, quantile function and random generation.\n\nFunctions in the Rcpp:: namespace return a vector.\nFunctions in the R:: namespace (also provided by the Rcpp R package) return a scalar\n\nFor example we can sample a single value from a Gamma distribution by extracting the first element from a vector\nRcpp::rgamma(1, 3, 1 / (y * y + 4))[0];\nOr use the R::rgamma() function to sample a single value directly\nR::rgamma(3, 1 / (y * y + 4));"
+    "text": "Statistical distributions\nAs in R, Rcpp provides d/p/q/r functions for the density, distribution function, quantile function and random generation.\n\nFunctions in the Rcpp:: namespace return a vector\nFunctions in the R:: namespace (also provided by the Rcpp R package) return a scalar\n\nFor example we can sample a single value from a Gamma distribution by extracting the first element from a vector\nRcpp::rgamma(1, 3, 1 / (y * y + 4))[0];\nOr use the R::rgamma() function to sample a single value directly\nR::rgamma(3, 1 / (y * y + 4));"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#your-turn-part-1",
@@ -970,7 +977,7 @@
     "href": "slides/07-r-with-cpp/index.html#rcpp-sugar-1",
     "title": "C++ and Rcpp",
     "section": "Rcpp sugar",
-    "text": "Rcpp sugar\nRcpp provides some “syntactic sugar” to allow us to write C++ code that is more like R code.\nOne example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a NumericMatrix. Rcpp lets us extract an update whole rows/columns, e.g. in a matrix with three columns, we can set the \\(i\\)th row with\n\nmat(i, _) = NumericVector::create(1, 2, 3);\n\nA whole column would be extracted with mat(_, j)."
+    "text": "Rcpp sugar\nRcpp provides some “syntactic sugar” to allow us to write C++ code that is more like R code.\nOne example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a NumericMatrix. Rcpp lets us extract and update whole rows/columns, e.g. in a matrix with three columns, we can set the \\(i\\)th row with\n\nmat(i, _) = NumericVector::create(1, 2, 3);\n\nA whole column would be extracted with mat(_, j)."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#vectorized-functions",
@@ -1054,7 +1061,7 @@
     "href": "slides/02-github/index.html#more-on-open-code-and-software",
     "title": "Open Source and Git(Hub)",
     "section": "More on open code and software",
-    "text": "More on open code and software\nSee https://www.heatherturner.net/talks/gregynog2022/#1"
+    "text": "More on open code and software\nhttps://www.heatherturner.net/talks/gregynog2022/#1\nThe Turing Way: A handbook to reproducible, ethical and collaborative data science"
   },
   {
     "objectID": "slides/02-github/index.html#version-control",
@@ -1096,7 +1103,7 @@
     "href": "slides/02-github/index.html#github-1",
     "title": "Open Source and Git(Hub)",
     "section": "GitHub",
-    "text": "GitHub\nWarwick GitHub Enterprise: https://github.warwick.ac.uk/\n\nUse for Warwick-specific, private projects\nUsername will be ITS username\n\nGitHub: https://github.com/\n\nFree version allows private/public projects\nCan share/collaborate with people outside Warwick\nDevelop your personal portfolio"
+    "text": "GitHub\nhttps://github.com/\n\nFree version allows private/public projects\nCan share/collaborate with people outside Warwick\nDevelop your personal portfolio"
   },
   {
     "objectID": "slides/02-github/index.html#features",
@@ -1106,18 +1113,11 @@
     "text": "Features\nGitHub repositories have some nice features:\n\nREADME.md displayed as HTML\nBrowsable commit history\nIssues where you/others can note bug reports/TODO/feature requests\nPull requests (advanced) where you/others can propose changes to the code to be reviewed\nActions (advanced) automated actions when you commit to the repo\nProjects (advanced) to organize issues (To Do/In Progress/Done)\nWiki for project documentation\nDeploy websites with pages"
   },
   {
-    "objectID": "slides/02-github/index.html#further-benefits-of-github",
-    "href": "slides/02-github/index.html#further-benefits-of-github",
+    "objectID": "slides/02-github/index.html#example-repo",
+    "href": "slides/02-github/index.html#example-repo",
     "title": "Open Source and Git(Hub)",
-    "section": "Further benefits of GitHub",
-    "text": "Further benefits of GitHub\nResearch compendia\nPotential to use Binder to so that people can run your code in the browser\n\nFor short analysis (&lt;10 min) on small data (&lt; 10MB)\nZero to Binder tutorial [Julia, Python, R]\n\nSoftware packages\n\nUsers can install Julia/Python/R packages from GitHub\nCan deploy package websites using GitHub pages\nCan benefit from GitHub Actions, e.g. automatically running tests"
-  },
-  {
-    "objectID": "slides/02-github/index.html#your-turn-explore-some-github-repositories",
-    "href": "slides/02-github/index.html#your-turn-explore-some-github-repositories",
-    "title": "Open Source and Git(Hub)",
-    "section": "Your turn! Explore some GitHub repositories",
-    "text": "Your turn! Explore some GitHub repositories\n\nThis course website and slides\n{palmerpenguins}\nR development guide"
+    "section": "Example repo",
+    "text": "Example repo\n\n{palmerpenguins}\n\nOther repos to explore:\n\nThis course website and slides\nR development guide"
   },
   {
     "objectID": "slides/02-github/index.html#your-turn-create-a-github-repository",
@@ -1222,7 +1222,7 @@
     "href": "slides/02-github/index.html#git-tab",
     "title": "Open Source and Git(Hub)",
     "section": "Git tab",
-    "text": "Git tab\nA Git tab is added to the pane that is in the top right by default, usually with Environment, History, and Connections tabs.\nThe initial view is equivalent to the output of the terminal command git status.\n\n\nWe can stage changes to commit\n Underlying command:\ngit add &lt;file/folder&gt;.\n\nThen commit a set of changes\n Underlying command:\ngit commit -m \"commit message\""
+    "text": "Git tab\nA Git tab is added to the pane that is in the top right by default, usually with Environment, History, and Connections tabs.\nThe initial view is equivalent to the output of the terminal command git status.\n\n\nWe can stage changes to commit\n\nUnderlying command:\ngit add &lt;file/folder&gt;.\n\nThen commit a set of changes\n\nUnderlying command:\ngit commit -m \"commit message\""
   },
   {
     "objectID": "slides/02-github/index.html#gitignore",
@@ -1253,46 +1253,11 @@
     "text": "Avoid conflicts\nIf you work on both the local and GitHub copy, it’s possible to get out of sync and end up with conflicting versions of the same file.\nIt is possible to fix this, but it can be tricky/confusing. It’s best to avoid problem in first place!\nRecommended practice:\n\nAlways commit and push changes at the end of an RStudio session\nAlways pull changes at the beginning of an RStudio session"
   },
   {
-    "objectID": "slides/02-github/index.html#set-.rprofile-to-check-git-status",
-    "href": "slides/02-github/index.html#set-.rprofile-to-check-git-status",
-    "title": "Open Source and Git(Hub)",
-    "section": "Set .Rprofile to check git status",
-    "text": "Set .Rprofile to check git status\nThis is a neat trick (credit: Lisa De Bruine)\nOpen your .Rprofile\nusethis::edit_r_profile()\nand add the following (credit: Lisa De Bruine)\ncat(cli::col_blue(system(\"git status -u no\", TRUE)))\nThis will run git status from the command line when you start R, giving a (blue coloured!) message e.g.\nOn branch main Your branch is behind 'origin/main' by 1 commit,\nand can be fast-forwarded.   (use \"git pull\" to update your  \nlocal branch)  nothing to commit, working tree clean\nIf your main branch is behind the main branch on origin (GitHub), you should pull changes before making new edits."
-  },
-  {
-    "objectID": "slides/02-github/index.html#advanced-amend-commit-before-pushing",
-    "href": "slides/02-github/index.html#advanced-amend-commit-before-pushing",
-    "title": "Open Source and Git(Hub)",
-    "section": "Advanced: Amend commit (before pushing)",
-    "text": "Advanced: Amend commit (before pushing)\nSometimes we don’t stage everything we intended to include in a commit, e.g. we committed a file before saving the latest changes.\nIf we haven’t yet pushed the commit to GitHub, simply stage the extra commits and check the “Amend previous commit” box under the commit message.\nThe original commit message will be shown - you can edit this to change the message for the amended commit (useful if you forgot to reference a GitHub issue number)"
-  },
-  {
-    "objectID": "slides/02-github/index.html#advanced-undo-last-commit-before-pushing",
-    "href": "slides/02-github/index.html#advanced-undo-last-commit-before-pushing",
-    "title": "Open Source and Git(Hub)",
-    "section": "Advanced: Undo last commit (before pushing)",
-    "text": "Advanced: Undo last commit (before pushing)\nAlternatively, you can undo a commit before pushing.\nTo undo the commit, keeping files as they are\n\ngit reset HEAD~1\n\n(change the 1 to a higher number to go back more than 1 commit).\nTo undo the commit and all the changes in that commit\n\ngit reset --hard HEAD~1\n\nThis goes back to the version at the last commit."
-  },
-  {
-    "objectID": "slides/02-github/index.html#advanced-undo-last-commit-after-pushing",
-    "href": "slides/02-github/index.html#advanced-undo-last-commit-after-pushing",
-    "title": "Open Source and Git(Hub)",
-    "section": "Advanced: Undo last commit (after pushing)",
-    "text": "Advanced: Undo last commit (after pushing)\nIt is best practice to create a new commit that undoes the changes. Run\n\ngit revert HEAD\n\nThis edits the files to undo the changes in your last commit. You should then commit these edits, with a relevant message.\nIt is possible to use git reset --hard to undo a commit and then git push origin main --force to force this change onto GitHub. Sometimes repository maintainers do not allow this as it rewrites the history, which can cause problems for people that have cloned or forked your repo."
-  },
-  {
     "objectID": "slides/02-github/index.html#general-workflow",
     "href": "slides/02-github/index.html#general-workflow",
     "title": "Open Source and Git(Hub)",
     "section": "General workflow",
-    "text": "General workflow\n\nCommit regularly, once you’ve got a small complete change, e.g. a working draft of a function, a bug fix, a draft of a README.\n\nIt is easier to review/revert changes if they relate to a single file or common issue\n\nIdeally, make a commit everytime you make a substantial, coherent set of changes.\nAt least make a commit every time you take a break, especially when leaving at the end of your working session\nPush often enough that GitHub is a useful backup"
-  },
-  {
-    "objectID": "slides/02-github/index.html#adding-an-existing-project-to-github",
-    "href": "slides/02-github/index.html#adding-an-existing-project-to-github",
-    "title": "Open Source and Git(Hub)",
-    "section": "Adding an existing project to GitHub",
-    "text": "Adding an existing project to GitHub\nThe simplest approach is to create a GitHub repo with just a README as before, create the corresponding RStudio project, copy your files into the new directory, stage and commit them.\nIf you are already using git and want to move the project to GitHub, see Adding a local repository to GitHub using git. Once the project is on GitHub you can clone it into an RStudio project."
+    "text": "General workflow\n\nCommit regularly, once you’ve got a small complete change, e.g. a working draft of a function, a bug fix, a draft of a README.\n\nIt is easier to review/revert changes if they relate to a single file or common issue\nIdeally, make a commit everytime you make a substantial, coherent set of changes.\nAt least make a commit every time you take a break, especially when leaving at the end of your working session\n\nPush often enough that GitHub is a useful backup"
   },
   {
     "objectID": "slides/02-github/index.html#some-other-tools",
@@ -1321,6 +1286,41 @@
     "title": "Open Source and Git(Hub)",
     "section": "License",
     "text": "License\nLicensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)."
+  },
+  {
+    "objectID": "slides/02-github/index.html#set-.rprofile-to-check-git-status",
+    "href": "slides/02-github/index.html#set-.rprofile-to-check-git-status",
+    "title": "Open Source and Git(Hub)",
+    "section": "Set .Rprofile to check git status",
+    "text": "Set .Rprofile to check git status\nThis is a neat trick (credit: Lisa De Bruine)\nOpen your .Rprofile\nusethis::edit_r_profile()\nand add the following (credit: Lisa De Bruine)\ncat(cli::col_blue(system(\"git status -u no\", TRUE)))\nThis will run git status from the command line when you start R, giving a (blue coloured!) message e.g.\nOn branch main Your branch is behind 'origin/main' by 1 commit,\nand can be fast-forwarded.   (use \"git pull\" to update your  \nlocal branch)  nothing to commit, working tree clean\nIf your main branch is behind the main branch on origin (GitHub), you should pull changes before making new edits."
+  },
+  {
+    "objectID": "slides/02-github/index.html#advanced-amend-commit-before-pushing",
+    "href": "slides/02-github/index.html#advanced-amend-commit-before-pushing",
+    "title": "Open Source and Git(Hub)",
+    "section": "Advanced: Amend commit (before pushing)",
+    "text": "Advanced: Amend commit (before pushing)\nSometimes we don’t stage everything we intended to include in a commit, e.g. we committed a file before saving the latest changes.\nIf we haven’t yet pushed the commit to GitHub, simply stage the extra commits and check the “Amend previous commit” box under the commit message.\nThe original commit message will be shown - you can edit this to change the message for the amended commit (useful if you forgot to reference a GitHub issue number)"
+  },
+  {
+    "objectID": "slides/02-github/index.html#advanced-undo-last-commit-before-pushing",
+    "href": "slides/02-github/index.html#advanced-undo-last-commit-before-pushing",
+    "title": "Open Source and Git(Hub)",
+    "section": "Advanced: Undo last commit (before pushing)",
+    "text": "Advanced: Undo last commit (before pushing)\nAlternatively, you can undo a commit before pushing.\nTo undo the commit, keeping files as they are\n\ngit reset HEAD~1\n\n(change the 1 to a higher number to go back more than 1 commit).\nTo undo the commit and all the changes in that commit\n\ngit reset --hard HEAD~1\n\nThis goes back to the version at the last commit."
+  },
+  {
+    "objectID": "slides/02-github/index.html#advanced-undo-last-commit-after-pushing",
+    "href": "slides/02-github/index.html#advanced-undo-last-commit-after-pushing",
+    "title": "Open Source and Git(Hub)",
+    "section": "Advanced: Undo last commit (after pushing)",
+    "text": "Advanced: Undo last commit (after pushing)\nIt is best practice to create a new commit that undoes the changes. Run\n\ngit revert HEAD\n\nThis edits the files to undo the changes in your last commit. You should then commit these edits, with a relevant message.\nIt is possible to use git reset --hard to undo a commit and then git push origin main --force to force this change onto GitHub. Sometimes repository maintainers do not allow this as it rewrites the history, which can cause problems for people that have cloned or forked your repo."
+  },
+  {
+    "objectID": "slides/02-github/index.html#adding-an-existing-project-to-github",
+    "href": "slides/02-github/index.html#adding-an-existing-project-to-github",
+    "title": "Open Source and Git(Hub)",
+    "section": "Adding an existing project to GitHub",
+    "text": "Adding an existing project to GitHub\nThe simplest approach is to create a GitHub repo with just a README as before, create the corresponding RStudio project, copy your files into the new directory, stage and commit them.\nIf you are already using git and want to move the project to GitHub, see Adding a local repository to GitHub using git. Once the project is on GitHub you can clone it into an RStudio project."
   },
   {
     "objectID": "index.html",
@@ -1376,14 +1376,14 @@
     "href": "slides/06-profiling/index.html#example-nested-pause-functions",
     "title": "Profiling",
     "section": "Example: nested pause functions",
-    "text": "Example: nested pause functions\nThe following code is saved in profiling-example.R and uses profvis::pause() to wait 0.1s inside each function\n\ntop_level &lt;- function() {\n  profvis::pause(0.1)\n  middle_level()\n  bottom_level()\n}\nmiddle_level &lt;- function() {\n  profvis::pause(0.1)\n  bottom_level()\n}\nbottom_level &lt;- function() {\n  profvis::pause(0.1)\n}\n\n\nSys.sleep() can not be used as it would not show in profiling output"
+    "text": "Example: nested pause functions\nThe following code is saved in demos/profiling-example.R and uses profvis::pause() to wait 0.1s inside each function\n\ntop_level &lt;- function() {\n  profvis::pause(0.1)\n  middle_level()\n  bottom_level()\n}\nmiddle_level &lt;- function() {\n  profvis::pause(0.1)\n  bottom_level()\n}\nbottom_level &lt;- function() {\n  profvis::pause(0.1)\n}\n\n\nSys.sleep() can not be used as it would not show in profiling output"
   },
   {
     "objectID": "slides/06-profiling/index.html#using-profvis",
     "href": "slides/06-profiling/index.html#using-profvis",
     "title": "Profiling",
     "section": "Using profvis",
-    "text": "Using profvis\nSource the code to be profiled and pass the function call to be profiled to profvis()\n\nlibrary(profvis)\nsource(\"profiling-example.R\")\nprofvis(top_level())\n\nAn interactive HTML document will open with the results.\nIn RStudio this will open in the source pane; click “show in new window” button to open the document in a new window."
+    "text": "Using profvis\nSource the code to be profiled and pass the function call to be profiled to profvis() (this is in demos/profvis-example.R)\n\nlibrary(profvis)\nsource(here::here(\"demos\", \"profiling-example.R\"))\nprofvis(top_level())\n\nAn interactive HTML document will open with the results.\nIn RStudio this will open in the source pane; click “show in new window” button to open the document in a new window."
   },
   {
     "objectID": "slides/06-profiling/index.html#section",
@@ -1516,7 +1516,7 @@
     "href": "slides/03-functions/index.html#components-of-a-function",
     "title": "Functions",
     "section": "Components of a function",
-    "text": "Components of a function\nFunctions are defined by three components:\n\nthe name of the function\nthe arguments of the function, inside ( )\nthe body of the function that computes the result, inside { }\n\nThey are created using function()\n\nt_statistic &lt;- function(n) {\n    x &lt;- rnorm(n)\n    y &lt;- rnorm(n)\n    t.test(x, y)$statistic\n}"
+    "text": "Components of a function\nFunctions are defined by three components:\n\nthe name of the function\nthe arguments of the function, inside ( )\nthe body of the function that computes the result, inside { }\n\nThey are created using function()\n\nt_statistic &lt;- function(n) {\n  x &lt;- rnorm(n)\n  y &lt;- rnorm(n)\n  t.test(x, y)$statistic\n}"
   },
   {
     "objectID": "slides/03-functions/index.html#naming-functions",
@@ -1537,14 +1537,14 @@
     "href": "slides/03-functions/index.html#name-and-order-of-arguments",
     "title": "Functions",
     "section": "Name and order of arguments",
-    "text": "Name and order of arguments\nThe user can pass objects to these arguments using their names or by supplying unnamed values in the right order\n\nrnorm(5, 1, 10)\n\n[1]  -2.461052  -6.352155  11.663546 -18.569591 -15.241450\n\nrnorm(5, sd = 10)\n\n[1]  -6.1082194  -0.4014943 -25.8990493  21.1755415  11.8479155\n\n\nSo naming and order is important! Some guidelines\n\nput compulsory arguments first, e.g. data\nput rarely used arguments last, e.g. tolerance setting\nuse short but meaningful argument names\nif relevant, use the same argument names as similar functions"
+    "text": "Name and order of arguments\nThe user can pass objects to these arguments using their names or by supplying unnamed values in the right order\n\nrnorm(5, 1, 10)\n\n[1] -2.909228  2.890470 -3.051592 -4.061013  6.377595\n\nrnorm(5, sd = 10)\n\n[1] -7.1335327 -8.9193327 -0.4849698  8.6930853  5.4797383\n\n\nSo naming and order is important! Some guidelines\n\nput compulsory arguments first, e.g. data\nput rarely used arguments last, e.g. tolerance setting\nuse short but meaningful argument names\nif relevant, use the same argument names as similar functions"
   },
   {
     "objectID": "slides/03-functions/index.html#return-values-single",
     "href": "slides/03-functions/index.html#return-values-single",
     "title": "Functions",
     "section": "Return values (single)",
-    "text": "Return values (single)\nBy default, functions return the object created by the last line of code\n\nf &lt;- function(x) {\n    x &lt;- x + 1\n    log(x)\n}\n\nAlternatively return() can be used to terminate the function and return a given object\n\nf &lt;- function(x) {\n    if (all(x &gt; 0)) return(log(x))\n    x[x &lt;= 0] &lt;- 0.1\n    log(x)\n}"
+    "text": "Return values (single)\nBy default, functions return the object created by the last line of code\n\nf &lt;- function(x) {\n  x &lt;- x + 1\n  log(x)\n}\n\nAlternatively return() can be used to terminate the function and return a given object\n\nf &lt;- function(x) {\n    if (all(x &gt; 0)) return(log(x))\n    x[x &lt;= 0] &lt;- 0.1\n    log(x)\n}"
   },
   {
     "objectID": "slides/03-functions/index.html#return-values-multiple",
@@ -1565,14 +1565,14 @@
     "href": "slides/03-functions/index.html#rstudio-helper",
     "title": "Functions",
     "section": "RStudio helper",
-    "text": "RStudio helper\nRStudio has a helper to turn code into a function:\n\nSelect the lines of code that will become the body of the function.\nSelect “Code” &gt; “Extract Function” from the menu.\nEnter the name of the new function in the dialog box.\nEdit the arguments if required.\nAdd/edit the last line to specify the return value."
+    "text": "RStudio helper\nRStudio has a helper to turn code into a function:\n\nSelect the lines of code that will become the body of the function.\nSelect Code &gt; Extract Function from the menu.\nEnter the name of the new function in the dialog box.\nEdit the arguments if required.\nAdd/edit the last line to specify the return value."
   },
   {
     "objectID": "slides/03-functions/index.html#exercise-files",
     "href": "slides/03-functions/index.html#exercise-files",
     "title": "Functions",
     "section": "Exercise files",
-    "text": "Exercise files\nhttps://github.com/Warwick-Stats-Resources/Advanced-R-exercises\n\nYou can get the files by creating a new project from version control in RStudio (if set up)\nBy going to the ‘Code’ button in the repo, then ‘Download ZIP’, then opening Advanced-R-exercises.Rproj."
+    "text": "Exercise files\nhttps://github.com/Warwick-Stats-Resources/Advanced-R-exercises\n\nYou can get the files by creating a new project from version control in RStudio (if set up, as per the previous session)\nBy going to the ‘Code’ button in the repo, then ‘Download ZIP’, then opening Advanced-R-exercises.Rproj.\n\n\n\n\n\n\n\nNote\n\n\nWe will be using R markdown in the next exercise.\nGet show of hands for who is not familiar with this and give demo with exercise 1 if need be."
   },
   {
     "objectID": "slides/03-functions/index.html#exercise-1",
@@ -1586,28 +1586,28 @@
     "href": "slides/03-functions/index.html#function-environment",
     "title": "Functions",
     "section": "Function environment",
-    "text": "Function environment\nArguments are used as objects in the function code.\nA new environment is created each time the function is called, separate from the global workspace.\n\nx &lt;- 1\ny &lt;- 3\nf &lt;- function(x, y){\n    a &lt;- 1\n    x &lt;- x + a\n    x + y\n}\nf(x, y)\n\n[1] 5\n\nx\n\n[1] 1\n\na\n\nError in eval(expr, envir, enclos): object 'a' not found"
+    "text": "Function environment\nArguments are used as objects in the function code.\nA new environment is created each time the function is called, separate from the global workspace.\n\nx &lt;- 1\ny &lt;- 3\nf &lt;- function(x, y){\n  a &lt;- 1\n  x &lt;- x + a\n  x + y\n}\nf(x, y)\n\n[1] 5\n\nx\n\n[1] 1\n\na\n\nError in eval(expr, envir, enclos): object 'a' not found"
   },
   {
     "objectID": "slides/03-functions/index.html#lexical-scoping",
     "href": "slides/03-functions/index.html#lexical-scoping",
     "title": "Functions",
     "section": "Lexical scoping",
-    "text": "Lexical scoping\nIf an object is not defined within the function, or passed in as an argument, R looks for it in the parent environment where the function was defined\n\nx &lt;- 1\ny &lt;- 3\nf &lt;- function(x){\n    x + y\n}\nf(x)\n\n[1] 4\n\nrm(y)\nf(x)\n\nError in f(x): object 'y' not found\n\n\nIt is safest (and best practice) to use arguments rather than depend on global variables!"
+    "text": "Lexical scoping\nIf an object is not defined within the function, or passed in as an argument, R looks for it in the parent environment where the function was defined\n\nx &lt;- 1\ny &lt;- 3\nf &lt;- function(x){\n  x + y\n}\nf(x)\n\n[1] 4\n\nrm(y)\nf(x)\n\nError in f(x): object 'y' not found\n\n\nIt is safest (and best practice) to use arguments rather than depend on global variables!"
   },
   {
     "objectID": "slides/03-functions/index.html#unspecified-arguments",
     "href": "slides/03-functions/index.html#unspecified-arguments",
     "title": "Functions",
     "section": "Unspecified arguments",
-    "text": "Unspecified arguments\n... (the ellipsis) allow unspecified arguments to be passed to the function.\nThis device is used by functions that work with arbitrary numbers of objects, e.g. \n\nargs(sum)\n\nfunction (..., na.rm = FALSE) \nNULL\n\nsum(1, 4, 10, 2)\n\n[1] 17\n\n\nIt can also be used to pass on arguments to another function, e.g.\n\nt_statistic &lt;- function(x, g, ...) {\n    t.test(x ~ g, ...)$stat\n}"
+    "text": "Unspecified arguments\n... (the ellipsis) allow unspecified arguments to be passed to the function.\nThis device is used by functions that work with arbitrary numbers of objects, e.g. \n\nargs(sum)\n\nfunction (..., na.rm = FALSE) \nNULL\n\nsum(1, 4, 10, 2)\n\n[1] 17\n\n\nIt can also be used to pass on arguments to another function, e.g.\n\nt_statistic &lt;- function(x, g, ...) {\n  t.test(x ~ g, ...)$stat\n}"
   },
   {
     "objectID": "slides/03-functions/index.html#using-...",
     "href": "slides/03-functions/index.html#using-...",
     "title": "Functions",
     "section": "Using ...",
-    "text": "Using ...\nArguments passed to ... can be collected into a list for further analysis\n\nmeans &lt;- function(...){\n    dots &lt;- list(...)\n    vapply(dots, mean, numeric(1), na.rm = TRUE)\n}\nx &lt;- 1\ny &lt;- 2:3\nmeans(x, y)\n\n[1] 1.0 2.5\n\n\nSimilarly the objects could be concatenated using c()"
+    "text": "Using ...\nArguments passed to ... can be collected into a list for further analysis\n\nmeans &lt;- function(...){\n  dots &lt;- list(...)\n  vapply(dots, mean, numeric(1), na.rm = TRUE)\n}\nx &lt;- 1\ny &lt;- 2:3\nmeans(x, y)\n\n[1] 1.0 2.5\n\n\nSimilarly the objects could be concatenated using c()"
   },
   {
     "objectID": "slides/03-functions/index.html#side-effects",
@@ -1628,14 +1628,14 @@
     "href": "slides/03-functions/index.html#using-functions-from-other-packages",
     "title": "Functions",
     "section": "Using functions from other packages",
-    "text": "Using functions from other packages\nIn our own functions (outside of packages), it is possible to use library\n\nscale_rows &lt;- function(X){\n    library(matrixStats)\n    X &lt;- X - rowMeans(X)\n    X/rowSds(X)\n}\n\nBut this loads the entire package, potentially leading to clashes with functions from other packages. It is better to use the import package:\n\nscale_rows &lt;- function(X){\n    import::from(matrixStats, rowSds)\n    X &lt;- X - rowMeans(X)\n    X/rowSds(X)\n}\nscale_rows(matrix(1:12, nrow = 3))\n\n\nThen in our script we don’t need to use library(matrixStats) for rowSds to work (it must be installed though)!"
+    "text": "Using functions from other packages\nIn our own functions (outside of packages), it is possible to use library\n\nscale_rows &lt;- function(X){\n  library(matrixStats)\n  X &lt;- X - rowMeans(X)\n  X/rowSds(X)\n}\n\nBut this loads the entire package, potentially leading to clashes with functions from other packages. It is better to use the import package:\n\nscale_rows &lt;- function(X){\n  import::from(matrixStats, rowSds)\n  X &lt;- X - rowMeans(X)\n  X/rowSds(X)\n}\nscale_rows(matrix(1:12, nrow = 3))\n\n\nThen in our script we don’t need to use library(matrixStats) for rowSds to work (it must be installed though)!"
   },
   {
     "objectID": "slides/03-functions/index.html#custom-ggplot",
     "href": "slides/03-functions/index.html#custom-ggplot",
     "title": "Functions",
     "section": "Custom ggplot",
-    "text": "Custom ggplot\nggplot2, like dplyr and other tidyverse packages, uses non-standard evaluation, that is, it refers to variable names in a data frame as if they were objects in the current environment\n\nggplot(mtcars, aes(x = mpg, y= disp)) +\n    geom_point()\n\nTo emulate this, we have to need to embrace arguments\n\nggscatter &lt;- function(data, x, y){\n    import::from(ggplot2, ggplot, aes, geom_point)\n    ggplot(data, aes(x = {{ x }}, y = {{ y }})) +\n        geom_point()\n}\nggscatter(mtcars, x = mpg, y = disp)"
+    "text": "Custom ggplot\nggplot2, like dplyr and other tidyverse packages, uses non-standard evaluation, that is, it refers to variable names in a data frame as if they were objects in the current environment\n\nggplot(mtcars, aes(x = mpg, y= disp)) +\n  geom_point()\n\nTo emulate this, we have to need to embrace arguments\n\nggscatter &lt;- function(data, x, y){\n  import::from(ggplot2, ggplot, aes, geom_point)\n  ggplot(data, aes(x = {{ x }}, y = {{ y }})) +\n    geom_point()\n}\nggscatter(mtcars, x = mpg, y = disp)"
   },
   {
     "objectID": "slides/03-functions/index.html#externalizing-function-code",
@@ -1649,21 +1649,21 @@
     "href": "slides/03-functions/index.html#sanity-checks",
     "title": "Functions",
     "section": "Sanity checks",
-    "text": "Sanity checks\nTo avoid mistakes, you may want to add some basic sanity checks\n\nlogit &lt;- function(p){\n    stopifnot(p &gt; 0 & p &lt; 1)\n    log(p/(1 - p))\n}\nlogit(2)\n\nError in logit(2): p &gt; 0 & p &lt; 1 is not TRUE\n\nlogit(0.5)\n\n[1] 0"
+    "text": "Sanity checks\nTo avoid mistakes, you may want to add some basic sanity checks\n\nlogit &lt;- function(p){\n  stopifnot(p &gt; 0 & p &lt; 1)\n  log(p/(1 - p))\n}\nlogit(2)\n\nError in logit(2): p &gt; 0 & p &lt; 1 is not TRUE\n\nlogit(0.5)\n\n[1] 0"
   },
   {
     "objectID": "slides/03-functions/index.html#error-messages",
     "href": "slides/03-functions/index.html#error-messages",
     "title": "Functions",
     "section": "Error messages",
-    "text": "Error messages\nOften the R messages can be quite obscure\n\nzap &lt;- function(x) if (max(x) &lt; 1e7) 0 else x\nx &lt;- c(1, 2, NA)\nzap(x)\n\nError in if (max(x) &lt; 1e+07) 0 else x: missing value where TRUE/FALSE needed\n\n\nMore helpful error message can be implemented using stop\n\nzap &lt;- function(x) {\n    if (any(is.na(x))) stop(\"missing values in x\\nare\", \n                            \" not allowed\")\n    if (max(x) &lt; 1e7) 0 else x\n}\nzap(x)\n\nError in zap(x): missing values in x\nare not allowed"
+    "text": "Error messages\nOften the R messages can be quite obscure\n\nzap &lt;- function(x) if (max(x) &lt; 1e7) 0 else x\nx &lt;- c(1, 2, NA)\nzap(x)\n\nError in if (max(x) &lt; 1e+07) 0 else x: missing value where TRUE/FALSE needed\n\n\nMore helpful error message can be implemented using stop\n\nzap &lt;- function(x) {\n  if (any(is.na(x))) stop(\"missing values in x\\nare\", \n                          \" not allowed\")\n  if (max(x) &lt; 1e7) 0 else x\n}\nzap(x)\n\nError in zap(x): missing values in x\nare not allowed"
   },
   {
     "objectID": "slides/03-functions/index.html#warning-messages",
     "href": "slides/03-functions/index.html#warning-messages",
     "title": "Functions",
     "section": "Warning messages",
-    "text": "Warning messages\nWarning messages should be given using warning()\n\nsafe_log2 &lt;- function(x) {\n    if (any(x == 0)) {\n        x[x == 0] &lt;- 0.1\n        warning(\"zeros replaced by 0.1\")\n    }\n    log(x, 2)\n}\nsafe_log2(0:1)\n\n[1] -3.321928  0.000000\n\n\nOther messages can be printed using message()."
+    "text": "Warning messages\nWarning messages should be given using warning()\n\nsafe_log2 &lt;- function(x) {\n  if (any(x == 0)) {\n    x[x == 0] &lt;- 0.1\n    warning(\"zeros replaced by 0.1\")\n  }\n  log(x, 2)\n}\nsafe_log2(0:1)\n\n[1] -3.321928  0.000000\n\n\nOther messages can be printed using message()."
   },
   {
     "objectID": "slides/03-functions/index.html#suppressing-warnings",
@@ -1747,7 +1747,7 @@
     "href": "slides/03-functions/index.html#documenting-functions",
     "title": "Functions",
     "section": "Documenting functions",
-    "text": "Documenting functions\nComments help to record what a function does\n\n# reorder x by grouping variable g\ngroupSort &lt;- function(x, g) {\n    ord &lt;- order(g) #indices for ascending order of g\n    x[ord]\n}\n\nThe docstring package enables roxygen comments to be turned into a help file\n\nlibrary(docstring)\ngroupSort &lt;- function(x, g) {\n    #' Reorder a Vector by a Grouping Variable\n    #'\n    #' @param x a vector\n    #' @param g a grouping variable\n    ord &lt;- order(g) #indices for ascending order of g\n    x[ord]\n}"
+    "text": "Documenting functions\nComments help to record what a function does\n\n# reorder x by grouping variable g\ngroupSort &lt;- function(x, g) {\n  ord &lt;- order(g) #indices for ascending order of g\n  x[ord]\n}\n\nThe docstring package enables roxygen comments to be turned into a help file\n\nlibrary(docstring)\ngroupSort &lt;- function(x, g) {\n  #' Reorder a Vector by a Grouping Variable\n  #'\n  #' @param x a vector\n  #' @param g a grouping variable\n  ord &lt;- order(g) #indices for ascending order of g\n  x[ord]\n}"
   },
   {
     "objectID": "slides/03-functions/index.html#view-the-help-file-as-usual",
@@ -1768,14 +1768,14 @@
     "href": "slides/03-functions/index.html#validation",
     "title": "Functions",
     "section": "Validation",
-    "text": "Validation\nWhen developing a function, we will want to validate its output.\nA simple approach is to try different inputs\n\nlog_2 &lt;- function(x){\n    log(x, 2)\n}\nlog_2(2^2)\n\n[1] 2\n\nlog_2(2^0)\n\n[1] 0\n\n\nDoing this each time we change the function becomes tedious to check and error-prone as we miss important tests."
+    "text": "Validation\nWhen developing a function, we will want to validate its output.\nA simple approach is to try different inputs\n\nlog_2 &lt;- function(x){\n  log(x, 2)\n}\nlog_2(2^2)\n\n[1] 2\n\nlog_2(2^0)\n\n[1] 0\n\n\nDoing this each time we change the function becomes tedious to check and error-prone as we miss important tests."
   },
   {
     "objectID": "slides/03-functions/index.html#unit-testing",
     "href": "slides/03-functions/index.html#unit-testing",
     "title": "Functions",
     "section": "Unit testing",
-    "text": "Unit testing\nThe testthat packages allows us to create a test suite:\nADD LINK\n\ncontext(\"log_2 works correctly\")\n\ntest_that(\"log_2 returns log to base 2\", {\n    expect_equal(log_2(2^3), 3)\n    expect_equal(log_2(2^0), 0)\n})\n\ntest_that(\"negative values give error\", {\n    expect_error(log_2(2^-1))\n})"
+    "text": "Unit testing\nThe testthat packages allows us to create a test suite:\nADD LINK\n\ncontext(\"log_2 works correctly\")\n\ntest_that(\"log_2 returns log to base 2\", {\n  expect_equal(log_2(2^3), 3)\n  expect_equal(log_2(2^0), 0)\n})\n\ntest_that(\"negative values give error\", {\n  expect_error(log_2(2^-1))\n})"
   },
   {
     "objectID": "slides/03-functions/index.html#running-tests",
@@ -1794,14 +1794,14 @@
   {
     "objectID": "content/06-profiling/index.html",
     "href": "content/06-profiling/index.html",
-    "title": "Resources",
+    "title": "Profiling",
     "section": "",
     "text": "Here’s a link to the slides in a new window.\nHere are the slides embedded:"
   },
   {
     "objectID": "content/06-profiling/index.html#slides",
     "href": "content/06-profiling/index.html#slides",
-    "title": "Resources",
+    "title": "Profiling",
     "section": "",
     "text": "Here’s a link to the slides in a new window.\nHere are the slides embedded:"
   },

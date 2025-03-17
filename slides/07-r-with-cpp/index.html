@@ -1154,19 +1154,19 @@ display:block!important;
 <li>Install packages from GitHub that include C/C++ code</li>
 </ul>
 <p>On Linux, you will usually have a C++ compiler installed, but you might as well get set up to develop R packages too.</p>
-<aside class="notes">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
 <p>If you’ve followed the development tools section of the course prerequisites, you should be fully set-up for this already.</p>
-<style type="text/css">
-span.MJX_Assistive_MathML {
-position:absolute!important;
-clip: rect(1px, 1px, 1px, 1px);
-padding: 1px 0 0 0!important;
-border: 0!important;
-height: 1px!important;
-width: 1px!important;
-overflow: hidden!important;
-display:block!important;
-}</style></aside>
+</div>
+</div>
+</div>
 </section>
 <section id="linux" class="slide level2">
 <h2>Linux</h2>
@@ -1179,7 +1179,7 @@ display:block!important;
 <h2>MacOS</h2>
 <p>Option 1</p>
 <ul>
-<li><a href="https://developer.apple.com/programs/register/">Register as an Apple developer (for free)</a>
+<li><a href="https://developer.apple.com/programs/enroll/">Register as an Apple developer (for free)</a>
 <ul>
 <li><p>Then, in the terminal:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sh number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
@@ -1217,12 +1217,15 @@ display:block!important;
 <span id="cb4-3"><a></a>  <span class="cf">return</span> value<span class="op">;</span></span>
 <span id="cb4-4"><a></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="smaller90">
 <ul>
 <li>The type for the return value is declared first</li>
 <li>The type of each argument must be declared</li>
 <li>The type of intermediate objects must be declared</li>
 <li>Return statements must use <code>return</code></li>
+<li>Every statement ends with <code>;</code></li>
 </ul>
+</div>
 </section>
 <section id="rcpp" class="slide level2">
 <h2>Rcpp</h2>
@@ -1246,7 +1249,7 @@ display:block!important;
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>add_cpp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>function (x, y) 
-.Call(&lt;pointer: 0x103088600&gt;, x, y)</code></pre>
+.Call(&lt;pointer: 0x100d8c680&gt;, x, y)</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">add_cpp</span>(<span class="dv">3</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1457,7 +1460,7 @@ display:block!important;
 <span id="cb20-2"><a></a>  <span class="dt">int</span> n <span class="op">=</span> y<span class="op">.</span>size<span class="op">();</span></span>
 <span id="cb20-3"><a></a>  NumericVector dist<span class="op">(</span>n<span class="op">);</span></span>
 <span id="cb20-4"><a></a>  <span class="cf">for</span><span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb20-5"><a></a>    dist<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> sqrt<span class="op">(</span>pow<span class="op">(</span>ys<span class="op">[</span>i<span class="op">]</span> <span class="op">-</span> x<span class="op">,</span> <span class="fl">2.0</span><span class="op">));</span></span>
+<span id="cb20-5"><a></a>    dist<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> sqrt<span class="op">(</span>pow<span class="op">(</span>y<span class="op">[</span>i<span class="op">]</span> <span class="op">-</span> x<span class="op">,</span> <span class="fl">2.0</span><span class="op">));</span></span>
 <span id="cb20-6"><a></a>  <span class="op">}</span></span>
 <span id="cb20-7"><a></a>  <span class="cf">return</span> out<span class="op">;</span></span>
 <span id="cb20-8"><a></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1478,7 +1481,7 @@ display:block!important;
 <p>From the menu bar:</p>
 <ul>
 <li>Go to File &gt; New File &gt; C++ file</li>
-<li>This template already incleas the headers required for Rcpp</li>
+<li>This template already includes the headers required for Rcpp</li>
 <li>Delete the extra content, apart from the comment <code>//[Rcpp::export]</code></li>
 </ul>
 <p>You can also create a C++ file from the new file drop-down in the Files pane, but this will be blank.</p>
@@ -1584,7 +1587,7 @@ display:block!important;
 <h2>Statistical distributions</h2>
 <p>As in R, <strong>Rcpp</strong> provides d/p/q/r functions for the density, distribution function, quantile function and random generation.</p>
 <ul>
-<li>Functions in the <code>Rcpp::</code> namespace return a vector.</li>
+<li>Functions in the <code>Rcpp::</code> namespace return a vector</li>
 <li>Functions in the <code>R::</code> namespace (also provided by the <strong>Rcpp</strong> R package) return a scalar</li>
 </ul>
 <p>For example we can sample a single value from a Gamma distribution by extracting the first element from a vector</p>
@@ -1630,7 +1633,7 @@ display:block!important;
 <section id="rcpp-sugar-1" class="slide level2">
 <h2>Rcpp sugar</h2>
 <p>Rcpp provides some “syntactic sugar” to allow us to write C++ code that is more like R code.</p>
-<p>One example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a <code>NumericMatrix</code>. Rcpp lets us extract an update whole rows/columns, e.g. in a matrix with three columns, we can set the <span class="math inline">\(i\)</span>th row with</p>
+<p>One example is operating on rows or columns of matrices. So far we have seen how to update individual elements of a <code>NumericMatrix</code>. Rcpp lets us extract and update whole rows/columns, e.g. in a matrix with three columns, we can set the <span class="math inline">\(i\)</span>th row with</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb29-1"><a></a>mat<span class="op">(</span>i<span class="op">,</span> _<span class="op">)</span> <span class="op">=</span> NumericVector<span class="op">::</span>create<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
