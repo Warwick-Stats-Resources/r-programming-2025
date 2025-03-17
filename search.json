@@ -1866,7 +1866,7 @@
     "href": "prerequisites.html#git-and-github",
     "title": "Prerequisites",
     "section": "git and GitHub",
-    "text": "git and GitHub\nAlthough there will be some time dedicated to this in the workshop, it would be advantageous if you already have:\n\ngit installed on your computer. See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git\na GitHub account\na GitHub PAT configured to work with RStudio – the vignette from the usethis package on Managing Git(Hub) Credentials goes through this."
+    "text": "git and GitHub\nPlease ensure you have:\n\ngit installed on your computer. See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git\na GitHub account\na GitHub PAT configured to work with RStudio – the vignette from the usethis package on Managing Git(Hub) Credentials goes through this."
   },
   {
     "objectID": "prerequisites.html#r-and-rstudio",
