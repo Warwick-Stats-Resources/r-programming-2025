@@ -86,16 +86,16 @@ Here, we use the same function, `summary()`, on objects of classes `factor` and 
 ## Motivation for OOP
 
 `summary()` could contain several if-else statements, but 
- 
- - the code would become hard to follow
- - only the function authors (R Core) could add new implementations
- 
+
+- the code would become hard to follow
+- only the function authors (R Core) could add new implementations
+
 ## What does OOP offer?
 
- - separates the code for different data types
- - avoids duplicating code by method inheritance from parent class(es) to child class (subclass)
- - makes it possible for external developers to add methods for new types of object
-    - this can be particularly useful when writing R packages
+- separates the code for different data types
+- avoids duplicating code by method inheritance from parent class(es) to child class (subclass)
+- makes it possible for external developers to add methods for new types of object
+  - this can be particularly useful when writing R packages
 
 
 ## OOP Systems in R
@@ -113,7 +113,7 @@ There are 3 main OOP systems in use:
   - More similar to OOP in other languages
   - May prefer if S3 insufficient and not aiming for Bioconductor
     
-A new OOP system, **S7**, is in [development](https://rconsortium.github.io/OOP-WG/) as a successor to **S3** and **S4**. 
+A new OOP system, **S7**, is in [development](https://rconsortium.github.io/S7/) as a successor to **S3** and **S4**. 
 :::
 
 :::{.notes}
@@ -273,22 +273,6 @@ class(pi2dp) <- "pi_trunc"
 pi2dp
 ```
 
-## Warning!
-
-S3 has no checks for correctness, so we can change the class of objects. 
-
-**This is a bad idea!**
-
-```{r error = TRUE}
-mod <- lm(flipper_length_mm ~ bill_length_mm, data = penguins)
-class(mod)
-class(mod) <- "Date"
-print(mod)
-```
-
-. . .
-
-> R doesn't stop you from shooting yourself in the foot, but as long as you don't aim the gun at your toes and pull the trigger, you won't have a problem.
 
 ## Creating your own classes
 
@@ -506,7 +490,7 @@ print.ols <- function(x, ...){
 }
 ```
 
-1. Create a function to fit an ordinary least squares model given a response `y` and an explanatory variable `x`, that returns an object of a new class `"ols"`, that inherits from `"lm"`.
+1. Create a function to fit an ordinary least squares model (using `lm()`) given a response `y` and an explanatory variable `x`, that returns an object of a new class `"ols"`, that inherits from `"lm"`.
 
 2. Define a print method for your function that it works as follows:
 
@@ -579,6 +563,8 @@ It gets stuck in infinite loop.
 
 ::: {.notes}
 Trying to subset `x` then call new_secret on it, to give it the `secret` class, so that `print.secret` works on said subset.  
+
+But get infinite loop because using `[` in definition
 :::
 
 ## What's the fix?
@@ -604,7 +590,6 @@ s3_dispatch(x[1])
 ```
 
 The `=>` indicates that `[.secret` is called, but that `NextMethod()` delegates work to the underlying internal `[` method, as shown by `->`.
-
 
 ## Another `NextMethod()` example
 
@@ -636,6 +621,90 @@ We can explicitly call the next method that would be called by `UseMethod()` to 
 :::{.notes}
 We have seen that `UseMethod()` will dispatch to the method of the next class in the class vector if a method is not defined for the first class.
 :::
+
+## Your turn (part 2)
+
+```{r}
+#| echo: false
+summary.ols <- function(object, ...){
+  res <- NextMethod()
+  class(res) <- c("summary.ols", class(res))
+  res
+}
+print.summary.ols <- function(x, ...){
+  cf <- coef(x)
+  cat("Coefficients: \n") 
+  print(cf)
+  cat("\n")
+  cat("Residual standard error: ", x$sigma, "\n")
+  cat("Multiple R-squared: ", x$r.squared, "\n")
+}
+```
+
+3. Write a summary method for your `ols` class that uses `NextMethod()` to compute the usual `lm` summary, but return an object of class `"summary.ols"`. 
+
+4. Write a print method for the `"summary.ols"` which works as follows:
+
+```{r}
+summary(res)
+```
+
+:::{.notes}
+will get issues with inheriting e.g. add1 method
+:::
+
+# Other OOP systems {.inverse}
+
+## S4
+
+S4 provides a formal approach to OOP. Its implementation is much stricter than S3.
+
+S4 has **slots**, a named component of the object accessed with `@`.
+
+S4 methods:
+
+- use specialised functions for creating classes, generics and methods
+- allow _multiple inheritance_: a class can have multiple parents
+- allow _multiple dispatch_: method selection based on the class of multiple objects
+
+:::{.notes}
+use import instead
+
+The **methods** package provides the functions required to use S4 classes and methods, so always load this package when using S4.
+:::
+
+## S4 uses
+
+- S4 is the OOP system used for bioconductor packages
+- The **Matrix** package
+
+## R6
+
+- The R6 OOP system is defined in the **R6** package: <https://r6.r-lib.org>
+- Encapsulated OOP, similar to OOP systems in other languages
+- The Advanced R book cautions against using R6 - it leads to non-idiomatic R code.
+
+## S7
+
+- Currently in the **S7** package: <https://rconsortium.github.io/S7/>
+- Will eventually be incorporated into R as the successor S3 and S4. 
+- An example of using S7 for generative art: <https://blog.djnavarro.net/posts/2024-02-25_s7/>
+
+# End matter {.inverse}
+
+## References
+
+- Main reference for this session, goes a bit further (including R6):
+Wickham, H, _Advanced R_ (2nd edn), _Object-oriented programming section_, <https://adv-r.hadley.nz/oo.html>
+
+- Fun example creating `Turtle` and `TurtleWithPen` classes to create simple graphics by moving the turtle:
+<https://stuartlee.org/2019/07/09/s4-short-guide/> 
+
+## License
+
+Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
+
+# Extra slides {.inverse}
 
 ## Implicit classes
 
@@ -708,85 +777,19 @@ View(scale.default)
 
 In `scale.default()` the attribute `"scaled:center"` is added to the `x` argument, so essentially, `center_x` is a matrix with extra information (in this case, the colMeans of the original columns).
 
-## Your turn (part 2)
+## Warning!
 
-```{r}
-#| echo: false
-summary.ols <- function(object, ...){
-  res <- NextMethod()
-  class(res) <- c("summary.ols", class(res))
-  res
-}
-print.summary.ols <- function(x, ...){
-  cf <- coef(x)
-  cat("Coefficients: \n") 
-  print(cf)
-  cat("\n")
-  cat("Residual standard error: ", x$sigma, "\n")
-  cat("Multiple R-squared: ", x$r.squared, "\n")
-}
+S3 has no checks for correctness, so we can change the class of objects. 
+
+**This is a bad idea!**
+
+```{r error = TRUE}
+mod <- lm(flipper_length_mm ~ bill_length_mm, data = penguins)
+class(mod)
+class(mod) <- "Date"
+print(mod)
 ```
 
-3. Write a summary method for your `ols` class that uses `NextMethod()` to compute the usual `lm` summary, but return an object of class `"summary.ols"`. 
+. . .
 
-4. Write a print method for the `"summary.ols"` which works as follows:
-
-```{r}
-summary(res)
-```
-
-:::{.notes}
-will get issues with inheriting e.g. add1 method
-:::
-
-# Other OOP systems {.inverse}
-
-## S4
-
-S4 provides a formal approach to OOP. Its implementation is much stricter than S3.
-
-S4 has **slots**, a named component of the object accessed with `@`.
-
-S4 methods:
-
- - use specialised functions for creating classes, generics and methods
- - allow _multiple inheritance_: a class can have multiple parents
- - allow _multiple dispatch_: method selection based on the class of multiple objects
-
-:::{.notes}
-use import instead
-
-The **methods** package provides the functions required to use S4 classes and methods, so always load this package when using S4.
-:::
-
-## S4 uses
-
-- S4 is the OOP system used for bioconductor packages
-- The **Matrix** package
-
-## R6
-
-- The R6 OOP system is defined in the **R6** package: <https://r6.r-lib.org>
-- Encapsulated OOP, similar to OOP systems in other languages
-- The Advanced R book cautions against using R6 - it leads to non-idiomatic R code.
-
-## S7
-
-- Currently in the **S7** package: <https://rconsortium.github.io/S7/>
-- Will eventually be incorporated into R as the successor S3 and S4. 
-- An example of using S7 for generative art: <https://blog.djnavarro.net/posts/2024-02-25_s7/>
-
-# End matter {.inverse}
-
-## References
-
-- Main reference for this session, goes a bit further (including R6):
-Wickham, H, _Advanced R_ (2nd edn), _Object-oriented programming section_, <https://adv-r.hadley.nz/oo.html>
-
-- Fun example creating `Turtle` and `TurtleWithPen` classes to create simple graphics by moving the turtle:
-<https://stuartlee.org/2019/07/09/s4-short-guide/> 
-
-## License
-
-Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
-
+> R doesn't stop you from shooting yourself in the foot, but as long as you don't aim the gun at your toes and pull the trigger, you won't have a problem.
