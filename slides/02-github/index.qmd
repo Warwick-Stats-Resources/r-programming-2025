@@ -124,8 +124,9 @@ Benefits of coding in the open
 
 ## More on open code and software
 
-See <https://www.heatherturner.net/talks/gregynog2022/#1>
+<https://www.heatherturner.net/talks/gregynog2022/#1>
 
+[The Turing Way](https://book.the-turing-way.org): A handbook to reproducible, ethical and collaborative data science
 
 # git {.inverse}
 
@@ -157,9 +158,9 @@ git is a version control system that allows us to record changes made to files i
 
 Each version has a unique ID and metadata:
 
- - Who created the new version
- - A short description of changes made
- - When the version was made
+- Who created the new version
+- A short description of changes made
+- When the version was made
  
 Versions can be compared, restored and merged.
 
@@ -171,9 +172,9 @@ To get started, a repository must be created locally (within a working directory
 
 git can then track when files/folders are 
 
-   - Added
-   - Modified
-   - Deleted
+- Added
+- Modified
+- Deleted
    
 Repositories can have multiple _branches_ of development. We will work on a single branch, with the default name of `main`.  
 
@@ -212,16 +213,11 @@ knitr::include_graphics("images/how_github_works.png")
 
 ## GitHub
 
-Warwick GitHub Enterprise: <https://github.warwick.ac.uk/>
+<https://github.com/>
 
- - Use for Warwick-specific, private projects
- - Username will be ITS username
-
-GitHub: <https://github.com/>
-
- - Free version allows private/public projects
- - Can share/collaborate with people outside Warwick
- - Develop your personal portfolio
+- Free version allows private/public projects
+- Can share/collaborate with people outside Warwick
+- Develop your personal portfolio
 
 ## Features
 
@@ -236,28 +232,13 @@ GitHub repositories have some nice features:
 - _Wiki_ for project documentation
 - Deploy websites with _pages_
 
-## Further benefits of GitHub
+## Example repo
 
-### Research compendia
-
-Potential to use Binder to so that people can run your code in the browser
-
- - For short analysis (<10 min) on small data (< 10MB)
- 
- - [Zero to Binder](https://the-turing-way.netlify.app/communication/binder/zero-to-binder.html) tutorial [Julia, Python, R]
- 
-### Software packages
-
-- Users can install Julia/Python/R packages from GitHub
-
-- Can deploy package websites using GitHub pages
-
-- Can benefit from GitHub Actions, e.g. automatically running tests
-
-## Your turn! Explore some GitHub repositories
-
-- [This course website and slides](https://github.com/Warwick-Stats-Resources/r-programming-2024)
 - [{palmerpenguins}](https://github.com/allisonhorst/palmerpenguins)
+
+Other repos to explore:
+
+- [This course website and slides](https://github.com/Warwick-Stats-Resources/r-programming-2025)
 - [R development guide](https://github.com/r-devel/rdevguide)
 
 ## Your turn! Create a GitHub repository
@@ -279,17 +260,17 @@ Potential to use Binder to so that people can run your code in the browser
 :::{.smaller75}
 - Click the pencil icon on the `README.md` file to edit.
 
-   - Update the title
-   - Add some example content using markdown syntax
-   - Use the "Preview changes" tab to check your edits
+  - Update the title
+  - Add some example content using markdown syntax
+  - Use the "Preview changes" tab to check your edits
    
 - Scroll down to the **Commit changes** section
     
-    - Add a short description of your changes in the first dialog box, e.g. `add basic information to README`
+  - Add a short description of your changes in the first dialog box, e.g. `add basic information to README`
 
-    - Click the green `Commit changes` button 
+  - Click the green `Commit changes` button 
 
-    - This will stage and commit the file in one go.
+  - This will stage and commit the file in one go.
         
 - View the commit history (look for clock icon with anti-clockwise arrow) and look at the diff for your commit.        
 
@@ -330,12 +311,12 @@ MacOS: If asked to install the Xcode command line tools, say yes - this will ins
 
 Windows: 
 
- - Use the installer from <https://git-scm.com/downloads>
- - Check RStudio can find the git executable
- 
-     - Go to Tools > Global Options > Git/SVN to check
-     - Restart RStudio before trying to use git
-     
+- Use the installer from <https://git-scm.com/downloads>
+- Check RStudio can find the git executable
+
+  - Go to Tools > Global Options > Git/SVN to check
+  - Restart RStudio before trying to use git
+    
 Linux:
 ```{sh, eval = FALSE}
 sudo apt-get install git
@@ -359,9 +340,9 @@ use_git_config(
 
 To keep your email private:
 
-   - Go to <https://github.com/settings/emails>, select “Keep my email address private” and “Block command line pushes that expose my email” options
-   - Configure git to use the address provided of the form <ID+username@users.noreply.github.com>
-   
+  - Go to <https://github.com/settings/emails>, select “Keep my email address private” and “Block command line pushes that expose my email” options
+  - Configure git to use the address provided of the form <ID+username@users.noreply.github.com>
+  
 ## Authentication
 
 GitHub requires authentication with a Personal Access Token or SSH key.
@@ -469,6 +450,7 @@ The initial view is equivalent to the output of the terminal command `git status
 We can *stage* changes to commit
 
 ![](images/stage_changes.png)
+
 Underlying command:  
 `git add <file/folder>`.
 :::
@@ -477,6 +459,7 @@ Underlying command:
 Then *commit* a set of changes
 
 ![](images/commit_changes.png)
+
 Underlying command:  
 `git commit -m "commit message"`
 :::
@@ -525,6 +508,62 @@ Recommended practice:
 
 - Always commit and push changes at the end of an RStudio session
 - Always pull changes at the beginning of an RStudio session
+
+## General workflow
+
+* Commit regularly, once you've got a small complete change, e.g. a working draft of a function, a bug fix, a draft of a README.
+
+  - It is easier to review/revert changes if they relate to a single file or common issue
+
+  - Ideally, make a commit everytime you make a substantial, coherent set of changes.
+
+  - At least make a commit every time you take a break, especially when leaving at the end of your working session
+
+* Push often enough that GitHub is a useful backup
+
+## Some other tools
+
+- [gert](https://docs.ropensci.org/gert/) R package has functions for interacting with git
+
+- It can be worth using dedicated software for interacting with git/GitHub
+
+  - [GitHub desktop](https://desktop.github.com)
+  
+  - [GitKraken](https://www.gitkraken.com)
+
+## Summary
+
+- Working openly encourages good practices
+
+- Your code/software is an asset!
+
+- We can make steps to improve our own practice
+
+- git and GitHub are invaluable resources for version control and collaboration
+
+# {#github-friends data-menu-title="GitHub for collaboration" background-image="images/github_friends.png" background-size="contain"}
+
+## Learning more
+
+- Happy Git and GitHub for the useR by Jenny Bryan
+
+  <http://happygitwithr.com>
+
+- GitHub for supporting, reusing, contributing and failing safely by Allison Horst and Julie Lowndes
+  
+  <https://www.openscapes.org/blog/2022/05/27/github-illustrated-series/>
+
+- Version control: A practical introduction to Git and GitHub
+
+  <https://www.jvcasillas.com/github_workshop/index.html#1>
+
+# End Matter {.inverse}
+
+## License
+
+Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
+
+# Extra slides {.inverse}
 
 ## Set `.Rprofile` to check git status
 
@@ -581,63 +620,8 @@ This edits the files to undo the changes in your last commit. You should then co
 
 It is possible to use `git reset --hard` to undo a commit and then `git push origin main --force` to force this change onto GitHub. Sometimes repository maintainers do not allow this as it rewrites the history, which can cause problems for people that have cloned or forked your repo.
 
-## General workflow
-
-* Commit regularly, once you've got a small complete change, e.g. a working draft of a function, a bug fix, a draft of a README.
-
-  - It is easier to review/revert changes if they relate to a single file or common issue
- 
- - Ideally, make a commit everytime you make a substantial, coherent set of changes.
- 
- - At least make a commit every time you take a break, especially when leaving at the end of your working session
-
-* Push often enough that GitHub is a useful backup
- 
-
 ## Adding an existing project to GitHub
 
 The simplest approach is to create a GitHub repo with just a README as before, create the corresponding RStudio project, copy your files into the new directory, stage and commit them.
 
 If you are already using git and want to move the project to GitHub, see [Adding a local repository to GitHub using git](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git). Once the project is on GitHub you can clone it into an RStudio project.
-
-## Some other tools
-
-- [gert](https://docs.ropensci.org/gert/) R package has functions for interacting with git
-
-- It can be worth using dedicated software for interacting with git/GitHub
-
-  - [GitHub desktop](https://desktop.github.com)
-  
-  - [GitKraken](https://www.gitkraken.com)
-
-## Summary
-
-- Working openly encourages good practices
-
-- Your code/software is an asset!
-
-- We can make steps to improve our own practice
-
-- git and GitHub are invaluable resources for version control and collaboration
-
-# {#github-friends data-menu-title="GitHub for collaboration" background-image="images/github_friends.png" background-size="contain"}
-
-## Learning more
-
-- Happy Git and GitHub for the useR by Jenny Bryan
-
-  <http://happygitwithr.com>
-
-- GitHub for supporting, reusing, contributing and failing safely by Allison Horst and Julie Lowndes
-  
-  <https://www.openscapes.org/blog/2022/05/27/github-illustrated-series/>
-
-- Version control: A practical introduction to Git and GitHub
-
-  <https://www.jvcasillas.com/github_workshop/index.html#1>
-
-# End Matter {.inverse}
-
-## License
-
-Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
