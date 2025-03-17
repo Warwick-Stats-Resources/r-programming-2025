@@ -26,17 +26,17 @@ format:
 
 Functions are defined by three components:
 
- - the name of the function
- - the arguments of the function, inside `( )`
- - the body of the function that computes the result, inside `{ }`
- 
+- the name of the function
+- the arguments of the function, inside `( )`
+- the body of the function that computes the result, inside `{ }`
+
 They are created using `function()`
 
 ```{r}
 t_statistic <- function(n) {
-    x <- rnorm(n)
-    y <- rnorm(n)
-    t.test(x, y)$statistic
+  x <- rnorm(n)
+  y <- rnorm(n)
+  t.test(x, y)$statistic
 }
 ```
 
@@ -87,8 +87,8 @@ So naming and order is important! Some guidelines
 By default, functions return the object created by the last line of code
 ```{r}
 f <- function(x) {
-    x <- x + 1
-    log(x)
+  x <- x + 1
+  log(x)
 }
 ```
 
@@ -137,7 +137,7 @@ symmetric_sums(mat)
 RStudio has a helper to turn code into a function:
 
 1. Select the lines of code that will become the body of the function.
-2. Select "`Code`" > "`Extract Function`" from the menu.
+2. Select **Code** > **Extract Function** from the menu.
 3. Enter the name of the new function in the dialog box.
 4. Edit the arguments if required.
 5. Add/edit the last line to specify the return value.
@@ -146,9 +146,15 @@ RStudio has a helper to turn code into a function:
 
 <https://github.com/Warwick-Stats-Resources/Advanced-R-exercises>
 
-- You can get the files by creating a new project from version control in RStudio (if set up)
+- You can get the files by creating a new project from version control in RStudio (if set up, as per the [previous session](../02-github/index.qmd))
 
 - By going to the 'Code' button in the repo, then 'Download ZIP', then opening Advanced-R-exercises.Rproj.
+
+:::{.callout-note}
+We will be using R markdown in the next exercise. 
+
+Get show of hands for who is not familiar with this and give demo with exercise 1 if need be.
+:::
 
 ## Exercise 1
 
@@ -171,9 +177,9 @@ A new environment is created each time the function is called, separate from the
 x <- 1
 y <- 3
 f <- function(x, y){
-    a <- 1
-    x <- x + a
-    x + y
+  a <- 1
+  x <- x + a
+  x + y
 }
 f(x, y)
 x
@@ -189,7 +195,7 @@ If an object is not defined within the function, or passed in as an argument, R 
 x <- 1
 y <- 3
 f <- function(x){
-    x + y
+  x + y
 }
 f(x)
 rm(y)
@@ -211,7 +217,7 @@ sum(1, 4, 10, 2)
 It can also be used to pass on arguments to another function, e.g.
 ```{r}
 t_statistic <- function(x, g, ...) {
-    t.test(x ~ g, ...)$stat
+  t.test(x ~ g, ...)$stat
 }
 ```
 
@@ -222,8 +228,8 @@ list for further analysis
 
 ```{r}
 means <- function(...){
-    dots <- list(...)
-    vapply(dots, mean, numeric(1), na.rm = TRUE)
+  dots <- list(...)
+  vapply(dots, mean, numeric(1), na.rm = TRUE)
 }
 x <- 1
 y <- 2:3
@@ -262,9 +268,9 @@ In our own functions (outside of packages), it is possible to use `library`
 
 ```{r}
 scale_rows <- function(X){
-    library(matrixStats)
-    X <- X - rowMeans(X)
-    X/rowSds(X)
+  library(matrixStats)
+  X <- X - rowMeans(X)
+  X/rowSds(X)
 }
 ```
 
@@ -272,9 +278,9 @@ But this loads the entire package, potentially leading to clashes with functions
 
 ```{r, eval = FALSE}
 scale_rows <- function(X){
-    import::from(matrixStats, rowSds)
-    X <- X - rowMeans(X)
-    X/rowSds(X)
+  import::from(matrixStats, rowSds)
+  X <- X - rowMeans(X)
+  X/rowSds(X)
 }
 scale_rows(matrix(1:12, nrow = 3))
 ```
@@ -291,16 +297,16 @@ Then in our script we don't need to use `library(matrixStats)` for
 
 ```{r, eval = FALSE}
 ggplot(mtcars, aes(x = mpg, y= disp)) +
-    geom_point()
+  geom_point()
 ```
 
 To emulate this, we have to need to **embrace** arguments
 
 ```{r, eval = FALSE}
 ggscatter <- function(data, x, y){
-    import::from(ggplot2, ggplot, aes, geom_point)
-    ggplot(data, aes(x = {{ x }}, y = {{ y }})) +
-        geom_point()
+  import::from(ggplot2, ggplot, aes, geom_point)
+  ggplot(data, aes(x = {{ x }}, y = {{ y }})) +
+    geom_point()
 }
 ggscatter(mtcars, x = mpg, y = disp)
 ```
@@ -329,8 +335,8 @@ To avoid mistakes, you may want to add some basic sanity checks
 
 ```{r, error = TRUE}
 logit <- function(p){
-    stopifnot(p > 0 & p < 1)
-    log(p/(1 - p))
+  stopifnot(p > 0 & p < 1)
+  log(p/(1 - p))
 }
 logit(2)
 logit(0.5)
@@ -350,9 +356,9 @@ More helpful error message can be implemented using `stop`
 
 ```{r, error = TRUE}
 zap <- function(x) {
-    if (any(is.na(x))) stop("missing values in x\nare", 
-                            " not allowed")
-    if (max(x) < 1e7) 0 else x
+  if (any(is.na(x))) stop("missing values in x\nare", 
+                          " not allowed")
+  if (max(x) < 1e7) 0 else x
 }
 zap(x)
 ```
@@ -363,11 +369,11 @@ Warning messages should be given using `warning()`
 
 ```{r}
 safe_log2 <- function(x) {
-    if (any(x == 0)) {
-        x[x == 0] <- 0.1
-        warning("zeros replaced by 0.1")
-    }
-    log(x, 2)
+  if (any(x == 0)) {
+    x[x == 0] <- 0.1
+    warning("zeros replaced by 0.1")
+  }
+  log(x, 2)
 }
 safe_log2(0:1)
 ```
@@ -491,14 +497,14 @@ error and enter debug mode where the error occurred.
 
 Good points:
 
- - Easy to enter debug mode (when option shown)
- - Can click in Traceback pane to view objects at any point in the call stack
- 
+- Easy to enter debug mode (when option shown)
+- Can click in Traceback pane to view objects at any point in the call stack
+
 Bad points:
 
- - May have gone past source of error (use breakpoints instead)
- - May enter deeply nested function: use `recover()` to select an earlier 
- entry point
+- May have gone past source of error (use breakpoints instead)
+- May enter deeply nested function: use `recover()` to select an earlier 
+entry point
 
 Alternatively use `options(error = recover)`, 
 run code to debug, then set `options(error = NULL)`.
@@ -542,7 +548,7 @@ Show how traceback works, and show `View(apply)` to show that's where the call t
 
 Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/){target="_blank"}).
 
-# Documenting and testing {background-color="#552D62"}
+# Documenting and testing {.inverse}
 
 ## Documenting functions
 
@@ -550,20 +556,20 @@ Comments help to record what a function does
 ```{r}
 # reorder x by grouping variable g
 groupSort <- function(x, g) {
-    ord <- order(g) #indices for ascending order of g
-    x[ord]
+  ord <- order(g) #indices for ascending order of g
+  x[ord]
 }
 ```
 The **docstring** package enables *roxygen* comments to be turned into a help file
 ```{r, message = FALSE}
 library(docstring)
 groupSort <- function(x, g) {
-    #' Reorder a Vector by a Grouping Variable
-    #'
-    #' @param x a vector
-    #' @param g a grouping variable
-    ord <- order(g) #indices for ascending order of g
-    x[ord]
+  #' Reorder a Vector by a Grouping Variable
+  #'
+  #' @param x a vector
+  #' @param g a grouping variable
+  ord <- order(g) #indices for ascending order of g
+  x[ord]
 }
 ```
 
@@ -591,7 +597,7 @@ A simple approach is to try different inputs
 
 ```{r}
 log_2 <- function(x){
-    log(x, 2)
+  log(x, 2)
 }
 log_2(2^2)
 log_2(2^0)
@@ -608,12 +614,12 @@ The **testthat** packages allows us to create a test suite:
 context("log_2 works correctly")
 
 test_that("log_2 returns log to base 2", {
-    expect_equal(log_2(2^3), 3)
-    expect_equal(log_2(2^0), 0)
+  expect_equal(log_2(2^3), 3)
+  expect_equal(log_2(2^0), 0)
 })
 
 test_that("negative values give error", {
-    expect_error(log_2(2^-1))
+  expect_error(log_2(2^-1))
 })
 ```
 
@@ -649,9 +655,9 @@ Run the `documentation` chunk of `exercises.Rmd` to view your documentation.
 
 Open the `tests.R` script. Using `expect_equal` add some tests for the following
 
- - a sample of 100,000 from N(0, 1) gives approximately slope 1, intercept 0
- - a sample of 100,000 from N(0, 1/2) gives approximately slope 2, intercept 0
- - sample of 100,000 from N(2, 1) gives approximately slope 1, intercept -2
+- a sample of 100,000 from N(0, 1) gives approximately slope 1, intercept 0
+- a sample of 100,000 from N(0, 1/2) gives approximately slope 2, intercept 0
+- sample of 100,000 from N(2, 1) gives approximately slope 1, intercept -2
 
 Use the `tol` argument in `expect_equal` to set a tolerance of 0.01.
 
