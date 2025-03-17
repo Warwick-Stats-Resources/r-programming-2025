@@ -101,6 +101,8 @@ res <- numeric(5000)
 for (i in seq_along(res)) res[i] <- 1
 ```
 
+. . .
+
 To initialise a list we can use
 ```{r}
 res <- vector(mode = "list", length = 100)
@@ -115,35 +117,44 @@ R usually copies an object to make changes to it.
 ```{r trace.growing}
 #| eval: false
 z <- NULL
-for (i in 1:3){ z <- c(z,1); print(tracemem(z)) }
+for (i in 1:3) { 
+  z <- c(z,1)
+  print(tracemem(z)) 
+}
 ```
+
 ```
 [1] "<0x122220648>"
 [1] "<0x11940ba08>"
 [1] "<0x127b9b9c8>"
 ```
 
-
-. . .
+## Copy-on-change (pre-allocated)
 
 ```{r trace.growing2}
 #| eval: false
-z <- numeric(2); print(tracemem(z))
+z <- numeric(2)
+print(tracemem(z))
 ```
+
 ```
-[1] "<0x1193ce2c8>"
+[1] "<0x167fb48c8>"
 ```
 
 . . .
 
 ```{r trace.growing3}
 #| eval: false
-for (i in 1:2){ z[i] <- i;print(tracemem(z)) }
+for (i in 1:2) {
+  z[i] <- i
+  print(tracemem(z)) 
+}
 ``` 
+
 ```
-tracemem[0x1193ce2c8 -> 0x135159648]: 
-[1] "<0x135159648>"
-[1] "<0x135159648>"
+tracemem[0x167fb48c8 -> 0x167fa90c8]: 
+[1] "<0x167fa90c8>"
+[1] "<0x167fa90c8>"
 ```
 
 
@@ -152,8 +163,6 @@ makes copy for each separate block of code
 e.g. if run with above in one go interactively no copies
      if run in separate chunks 1 copy  
 :::
-     
-
 
 # Benchmarking {.inverse}
 
@@ -212,20 +221,31 @@ Benchmarking can be difficult as the best option can depend on the size of the d
 
 When thinking about how our code scales to bigger, we need to consider what we mean by "big"
 
- - number of rows or number of columns?
- - number of observations or number of factor levels?
- 
- `bench::press()` compares a function over a grid of parameters 
+- number of rows or number of columns?
+- number of observations or number of factor levels?
+
+`bench::press()` compares a function over a grid of parameters 
 
 ## `bench::press()`
 
 ::: {.smaller90}
 ```{r}
-#| message: true
-bench::press(n = c(10, 100), k = c(10, 1),
+#| message: false
+#| cache: true
+bench::press(n = c(10, 100, 1000), k = c(100, 10, 1),
   bench::mark(gl(n, k, length = 1000)) # `gl` generates factor levels
 )
 ```
+:::
+
+
+:::{.notes}
+n: an integer giving the number of levels.
+
+k: an integer giving the number of replications.
+
+Little difference when increasing k for a given n
+Bigger difference when increasing n for a given k
 :::
 
 ## Exercise 1
@@ -333,7 +353,7 @@ paste0(rep(1:3, each = 2), c("a", "b"))
 
 ```{r ifelse}
 x <- c(5, 2, 9, 12)
-ifelse(x > 6, 2 * x, 3 * x)
+ifelse(x < 6, 2 * x, 3 * x)
 ``` 
 
 Recycling is also very useful here
@@ -356,7 +376,7 @@ y
 Logical operators such as `&` and `|` are vectorized, e.g.
 
 ```{r}
-x <- c(1, 0.6, 1.2, 0.4, 0.5)
+x <- c(0.3, 1, 0.6, 1.2, 0.4, 0.5)
 x > 0.4 & x < 0.8
 ```
 
@@ -486,7 +506,7 @@ for(i in seq_len(n)){
 
 ## Exercise 2 (continued)
 
-The for loop in the previous code is suitable for vectorization: the iterations are completely independent.
+The `for` loop in the previous code is suitable for vectorization: the iterations are completely independent.
 
 `rnorm()` is vectorized in the arguments `mu` and `sd`, e.g. to simulate a value from the 1st and 3rd component we could write:
 
