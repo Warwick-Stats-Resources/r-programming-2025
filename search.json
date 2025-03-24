@@ -816,7 +816,7 @@
     "href": "slides/07-r-with-cpp/index.html#using-the-c-function",
     "title": "C++ and Rcpp",
     "section": "Using the C++ function",
-    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x100d8c680&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
+    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x104ec8680&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#stand-alone-c-files",
