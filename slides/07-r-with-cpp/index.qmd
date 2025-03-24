@@ -629,6 +629,10 @@ Tsuda, M.E., _Rcpp for everyone_, <https://teuder.github.io/rcpp4everyone_en/300
   - The [Rcpp Gallery](https://gallery.rcpp.org/) has all sorts of examples, many illustrating advanced features of Rcpp).
 :::
 
+# Feedback {.inverse .center}
+
+<https://warwick.ac.uk/ellakaye/r-programming-2025-feedback>
+
 # End matter {.inverse}
 
 ## License

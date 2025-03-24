@@ -85,12 +85,12 @@ In the *flame graph* the yellow bars correspond to lines in the source file show
 
 In the overall time of 250ms we see:
 
- - 4 equal-sized blocks for each pause of 0.1s
- - Nearly all time is spent in the top-level function
- - Nearly half the time is spent in the mid-level function
- - Nearly half the time is also spent in the bottom-level function
- - The `cmp` function is called as R tries to compile new functions so that it can call the compiled version in subsequent calls.
- 
+- 4 equal-sized blocks for each pause of 0.1s
+- Nearly all time is spent in the top-level function
+- Nearly half the time is spent in the mid-level function
+- Nearly half the time is also spent in the bottom-level function
+- The `cmp` function is called as R tries to compile new functions so that it can call the compiled version in subsequent calls.
+
 No objects are created or deleted: no memory changes.
 
 ## Data tab
@@ -198,6 +198,10 @@ Finally, compare `profvis(run(n, move_square))` with `profvis(run(n, move_square
 ## C++ and Rcpp
 
 In the next session, we'll cover using C++ via **Rcpp** to rewrite R code that has been identified through profiling as causing bottlenecks in your code.
+
+# Feedback {.inverse .center}
+
+<https://warwick.ac.uk/ellakaye/r-programming-2025-feedback>
 
 # End matter {.inverse}
 
