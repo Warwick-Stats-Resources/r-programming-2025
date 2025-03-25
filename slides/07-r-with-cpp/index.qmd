@@ -240,6 +240,7 @@ double: more bits used to represent a real number vs single precision
 ## Example: no inputs, scalar output
 
 ```{cpp, eval = FALSE}
+// Return the value 1
 int one() {
   return 1;
 }
@@ -248,6 +249,7 @@ int one() {
 ## Example: if/else (scalar input, scalar output)
 
 ```{cpp, eval = FALSE}
+// Return the sign of an integer
 int signC(int x) {
   if (x > 0) {
     return 1;
@@ -280,6 +282,7 @@ for (int i = 0; i < n; ++i) {
 ## Example: `for` loop (vector input, scalar output)
 
 ```{cpp, eval = FALSE}
+// Compute the sum over a numeric vector
 double sumC(NumericVector x) {
   int n = x.size();
   double total = 0;
@@ -295,6 +298,7 @@ double sumC(NumericVector x) {
 ## Example: `while` loop (vector input, scalar output)
 
 ```{cpp, eval = FALSE}
+// Compute the sum over a numeric vector
 double sumC(NumericVector x) {
   int n = x.size();
   double total = 0;
@@ -317,11 +321,12 @@ The following computes the Euclidean distances
 $$d_i  = \sqrt{(x - y_i)^2}$$
 
 ```{cpp, eval = FALSE}
+// Euclidean distances between x and each value in y
 NumericVector distC(double x, NumericVector y) {
   int n = y.size();
   NumericVector dist(n);
   for(int i = 0; i < n; ++i) {
-    dist[i] = sqrt(pow(y[i] - x, 2.0));
+    dist[i] = sqrt(pow(x - y[i], 2.0));
   }
   return out;
 }
@@ -418,6 +423,7 @@ m1(0, 0) = 1;
 ## Example: row sums (matrix input, vector output)
 
 ```{cpp, eval = FALSE}
+// Compute sum of each row of a matrix
 NumericVector rowSumsC(NumericMatrix x) {
   int nrow = x.nrow(), ncol = x.ncol();
   NumericVector out(nrow);
@@ -443,13 +449,13 @@ As in R, **Rcpp** provides d/p/q/r functions for the density, distribution funct
 
 For example we can sample a single value from a Gamma distribution by extracting the first element from a vector
 ```{.cpp}
-Rcpp::rgamma(1, 3, 1 / (y * y + 4))[0];
+Rcpp::rgamma(1, 3, 1 / (y * y + 4))[0]; // n, shape, scale = 1 / rate
 ```
 
 Or use the `R::rgamma()` function to sample a single value directly
 
 ```{.cpp}
-R::rgamma(3, 1 / (y * y + 4));
+R::rgamma(3, 1 / (y * y + 4)); // shape, scale
 ```
 
 ## Your turn (part 1)
@@ -463,7 +469,7 @@ gibbs_r <- function(N, thin) {
 
   for (i in 1:N) {
     for (j in 1:thin) {
-      x <- rgamma(1, 3, y * y + 4)
+      x <- rgamma(1, 3, y * y + 4) # n, shape, rate 
       y <- rnorm(1, 1 / (x + 1), 1 / sqrt(2 * (x + 1)))
     }
     mat[i, ] <- c(x, y)
@@ -545,11 +551,12 @@ In addition, Rcpp provides many R-like functions, such as `which_max` or `rowSum
 Recall our distance function from earlier:
 
 ```{cpp, eval = FALSE}
+// Euclidean distances between x and each value in y
 NumericVector distC(double x, NumericVector y) {
   int n = y.size();
   NumericVector out(n);
   for(int i = 0; i < n; ++i) {
-    out[i] = sqrt(pow(ys[i] - x, 2.0));
+    out[i] = sqrt(pow(x - y[i], 2.0));
   }
   return out;
 }
@@ -568,6 +575,7 @@ NumericVector dist_sugar(double x, NumericVector y) {
 This example combines row-indexing and a vectorized function, `max()`.
 
 ```{cpp, eval = FALSE}
+// Compute maximum for each row of a matrix
 NumericVector row_max(NumericMatrix mat) {
   int nrow = mat.nrow();
   NumericVector max(nrow);
@@ -587,7 +595,7 @@ approx_pi_r <- function(N) {
     x <- runif(N)
     y <- runif(N)
     d <- sqrt(x^2 + y^2)
-    return(4 * sum(d < 1.0) / N)
+    return(4.0 * sum(d < 1.0) / N)
 }
 ```
 
@@ -602,6 +610,7 @@ double approx_pi_c(const int N) {
 }
 ```
 
+What happens if you use `4` instead of `4.0` here?
 
 ::: {.notes}
 This function gets used in an exercise in the Rcpp packages session.  
