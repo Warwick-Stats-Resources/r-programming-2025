@@ -816,7 +816,7 @@
     "href": "slides/07-r-with-cpp/index.html#using-the-c-function",
     "title": "C++ and Rcpp",
     "section": "Using the C++ function",
-    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x104ec8680&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
+    "text": "Using the C++ function\nAfter defining add_cpp() via cppFunction(), add_cpp() is available to use as a R function\n\nadd_cpp\n\nfunction (x, y) \n.Call(&lt;pointer: 0x1050f4680&gt;, x, y)\n\nadd_cpp(3, 5)\n\n[1] 8"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#stand-alone-c-files",
@@ -865,14 +865,14 @@
     "href": "slides/07-r-with-cpp/index.html#example-no-inputs-scalar-output",
     "title": "C++ and Rcpp",
     "section": "Example: no inputs, scalar output",
-    "text": "Example: no inputs, scalar output\n\nint one() {\n  return 1;\n}"
+    "text": "Example: no inputs, scalar output\n\n// Return the value 1\nint one() {\n  return 1;\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#example-ifelse-scalar-input-scalar-output",
     "href": "slides/07-r-with-cpp/index.html#example-ifelse-scalar-input-scalar-output",
     "title": "C++ and Rcpp",
     "section": "Example: if/else (scalar input, scalar output)",
-    "text": "Example: if/else (scalar input, scalar output)\n\nint signC(int x) {\n  if (x &gt; 0) {\n    return 1;\n  } else if (x == 0) {\n    return 0;\n  } else {\n    return -1;\n  }\n}"
+    "text": "Example: if/else (scalar input, scalar output)\n\n// Return the sign of an integer\nint signC(int x) {\n  if (x &gt; 0) {\n    return 1;\n  } else if (x == 0) {\n    return 0;\n  } else {\n    return -1;\n  }\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#for-loop-syntax",
@@ -886,21 +886,21 @@
     "href": "slides/07-r-with-cpp/index.html#example-for-loop-vector-input-scalar-output",
     "title": "C++ and Rcpp",
     "section": "Example: for loop (vector input, scalar output)",
-    "text": "Example: for loop (vector input, scalar output)\n\ndouble sumC(NumericVector x) {\n  int n = x.size();\n  double total = 0;\n  for (int i = 0; i &lt; n; ++i) {\n    total += x[i];\n  }\n  return total;\n}\n\n\nUse .size() method to find the length of a vector"
+    "text": "Example: for loop (vector input, scalar output)\n\n// Compute the sum over a numeric vector\ndouble sumC(NumericVector x) {\n  int n = x.size();\n  double total = 0;\n  for (int i = 0; i &lt; n; ++i) {\n    total += x[i];\n  }\n  return total;\n}\n\n\nUse .size() method to find the length of a vector"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#example-while-loop-vector-input-scalar-output",
     "href": "slides/07-r-with-cpp/index.html#example-while-loop-vector-input-scalar-output",
     "title": "C++ and Rcpp",
     "section": "Example: while loop (vector input, scalar output)",
-    "text": "Example: while loop (vector input, scalar output)\n\ndouble sumC(NumericVector x) {\n  int n = x.size();\n  double total = 0;\n  int i = 0;\n  while (i &lt; n) {\n    total += x[i];\n    ++i;\n  }\n  return total;\n}\n\n\nUse break to break from a while or for loop\nUse continue to skip to the next iteration (vs next in R)"
+    "text": "Example: while loop (vector input, scalar output)\n\n// Compute the sum over a numeric vector\ndouble sumC(NumericVector x) {\n  int n = x.size();\n  double total = 0;\n  int i = 0;\n  while (i &lt; n) {\n    total += x[i];\n    ++i;\n  }\n  return total;\n}\n\n\nUse break to break from a while or for loop\nUse continue to skip to the next iteration (vs next in R)"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#example-vector-output",
     "href": "slides/07-r-with-cpp/index.html#example-vector-output",
     "title": "C++ and Rcpp",
     "section": "Example: vector output",
-    "text": "Example: vector output\nThe following computes the Euclidean distances\n\\[d_i  = \\sqrt{(x - y_i)^2}\\]\n\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector dist(n);\n  for(int i = 0; i &lt; n; ++i) {\n    dist[i] = sqrt(pow(y[i] - x, 2.0));\n  }\n  return out;\n}\n\n\ndist(n) is used to create a numeric vector named dist of length n.\nv(n) would create a vector named v."
+    "text": "Example: vector output\nThe following computes the Euclidean distances\n\\[d_i  = \\sqrt{(x - y_i)^2}\\]\n\n// Euclidean distances between x and each value in y\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector dist(n);\n  for(int i = 0; i &lt; n; ++i) {\n    dist[i] = sqrt(pow(x - y[i], 2.0));\n  }\n  return out;\n}\n\n\ndist(n) is used to create a numeric vector named dist of length n.\nv(n) would create a vector named v."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#c-functions",
@@ -949,21 +949,21 @@
     "href": "slides/07-r-with-cpp/index.html#example-row-sums-matrix-input-vector-output",
     "title": "C++ and Rcpp",
     "section": "Example: row sums (matrix input, vector output)",
-    "text": "Example: row sums (matrix input, vector output)\n\nNumericVector rowSumsC(NumericMatrix x) {\n  int nrow = x.nrow(), ncol = x.ncol();\n  NumericVector out(nrow);\n  \n  for (int i = 0; i &lt; nrow; i++) {\n    double total = 0;\n    for (int j = 0; j &lt; ncol; j++) {\n      total += x(i, j);\n    }\n    out[i] = total;\n  }\n  return out;\n}"
+    "text": "Example: row sums (matrix input, vector output)\n\n// Compute sum of each row of a matrix\nNumericVector rowSumsC(NumericMatrix x) {\n  int nrow = x.nrow(), ncol = x.ncol();\n  NumericVector out(nrow);\n  \n  for (int i = 0; i &lt; nrow; i++) {\n    double total = 0;\n    for (int j = 0; j &lt; ncol; j++) {\n      total += x(i, j);\n    }\n    out[i] = total;\n  }\n  return out;\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#statistical-distributions",
     "href": "slides/07-r-with-cpp/index.html#statistical-distributions",
     "title": "C++ and Rcpp",
     "section": "Statistical distributions",
-    "text": "Statistical distributions\nAs in R, Rcpp provides d/p/q/r functions for the density, distribution function, quantile function and random generation.\n\nFunctions in the Rcpp:: namespace return a vector\nFunctions in the R:: namespace (also provided by the Rcpp R package) return a scalar\n\nFor example we can sample a single value from a Gamma distribution by extracting the first element from a vector\nRcpp::rgamma(1, 3, 1 / (y * y + 4))[0];\nOr use the R::rgamma() function to sample a single value directly\nR::rgamma(3, 1 / (y * y + 4));"
+    "text": "Statistical distributions\nAs in R, Rcpp provides d/p/q/r functions for the density, distribution function, quantile function and random generation.\n\nFunctions in the Rcpp:: namespace return a vector\nFunctions in the R:: namespace (also provided by the Rcpp R package) return a scalar\n\nFor example we can sample a single value from a Gamma distribution by extracting the first element from a vector\nRcpp::rgamma(1, 3, 1 / (y * y + 4))[0]; // n, shape, scale = 1 / rate\nOr use the R::rgamma() function to sample a single value directly\nR::rgamma(3, 1 / (y * y + 4)); // shape, scale"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#your-turn-part-1",
     "href": "slides/07-r-with-cpp/index.html#your-turn-part-1",
     "title": "C++ and Rcpp",
     "section": "Your turn (part 1)",
-    "text": "Your turn (part 1)\nIn a new C++ file, convert the following Gibbs sampler to C++\n\ngibbs_r &lt;- function(N, thin) {\n  mat &lt;- matrix(nrow = N, ncol = 2)\n  x &lt;- y &lt;- 0\n\n  for (i in 1:N) {\n    for (j in 1:thin) {\n      x &lt;- rgamma(1, 3, y * y + 4)\n      y &lt;- rnorm(1, 1 / (x + 1), 1 / sqrt(2 * (x + 1)))\n    }\n    mat[i, ] &lt;- c(x, y)\n  }\n  mat\n}"
+    "text": "Your turn (part 1)\nIn a new C++ file, convert the following Gibbs sampler to C++\n\ngibbs_r &lt;- function(N, thin) {\n  mat &lt;- matrix(nrow = N, ncol = 2)\n  x &lt;- y &lt;- 0\n\n  for (i in 1:N) {\n    for (j in 1:thin) {\n      x &lt;- rgamma(1, 3, y * y + 4) # n, shape, rate \n      y &lt;- rnorm(1, 1 / (x + 1), 1 / sqrt(2 * (x + 1)))\n    }\n    mat[i, ] &lt;- c(x, y)\n  }\n  mat\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#your-turn-part-2",
@@ -991,21 +991,21 @@
     "href": "slides/07-r-with-cpp/index.html#rcpp-sugar-vectorized-functions",
     "title": "C++ and Rcpp",
     "section": "Rcpp sugar: vectorized functions",
-    "text": "Rcpp sugar: vectorized functions\nRecall our distance function from earlier:\n\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector out(n);\n  for(int i = 0; i &lt; n; ++i) {\n    out[i] = sqrt(pow(ys[i] - x, 2.0));\n  }\n  return out;\n}\n\nWith Rcpp vectorization, we can simplify this to:\n\nNumericVector dist_sugar(double x, NumericVector y) {\n  return sqrt(pow(x - y, 2));\n}"
+    "text": "Rcpp sugar: vectorized functions\nRecall our distance function from earlier:\n\n// Euclidean distances between x and each value in y\nNumericVector distC(double x, NumericVector y) {\n  int n = y.size();\n  NumericVector out(n);\n  for(int i = 0; i &lt; n; ++i) {\n    out[i] = sqrt(pow(x - y[i], 2.0));\n  }\n  return out;\n}\n\nWith Rcpp vectorization, we can simplify this to:\n\nNumericVector dist_sugar(double x, NumericVector y) {\n  return sqrt(pow(x - y, 2));\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#example-row-maximums",
     "href": "slides/07-r-with-cpp/index.html#example-row-maximums",
     "title": "C++ and Rcpp",
     "section": "Example: row maximums",
-    "text": "Example: row maximums\nThis example combines row-indexing and a vectorized function, max().\n\nNumericVector row_max(NumericMatrix mat) {\n  int nrow = mat.nrow();\n  NumericVector max(nrow);\n  for (int i = 0; i &lt; nrow; i++)\n    max[i] = max( m(i,_) );\n  return max;\n}"
+    "text": "Example: row maximums\nThis example combines row-indexing and a vectorized function, max().\n\n// Compute maximum for each row of a matrix\nNumericVector row_max(NumericMatrix mat) {\n  int nrow = mat.nrow();\n  NumericVector max(nrow);\n  for (int i = 0; i &lt; nrow; i++)\n    max[i] = max( m(i,_) );\n  return max;\n}"
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#your-turn-1",
     "href": "slides/07-r-with-cpp/index.html#your-turn-1",
     "title": "C++ and Rcpp",
     "section": "Your turn",
-    "text": "Your turn\nThe following R function can be used to simulate the value of \\(\\pi\\):\n\napprox_pi_r &lt;- function(N) {\n    x &lt;- runif(N)\n    y &lt;- runif(N)\n    d &lt;- sqrt(x^2 + y^2)\n    return(4 * sum(d &lt; 1.0) / N)\n}\n\nConvert this to C++, taking advantage of the vectorized Rcpp functions.\n\nThis function gets used in an exercise in the Rcpp packages session."
+    "text": "Your turn\nThe following R function can be used to simulate the value of \\(\\pi\\):\n\napprox_pi_r &lt;- function(N) {\n    x &lt;- runif(N)\n    y &lt;- runif(N)\n    d &lt;- sqrt(x^2 + y^2)\n    return(4.0 * sum(d &lt; 1.0) / N)\n}\n\nConvert this to C++, taking advantage of the vectorized Rcpp functions.\nWhat happens if you use 4 instead of 4.0 here?\n\nThis function gets used in an exercise in the Rcpp packages session."
   },
   {
     "objectID": "slides/07-r-with-cpp/index.html#references",
